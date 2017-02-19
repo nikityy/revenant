@@ -4,6 +4,7 @@ var expect = chai.expect;
 var Revenant = require('../lib/revenant');
 
 var rutracker = { on: function() {}, login: function() {} };
+var credentials = { username: '.', password: '.' };
 
 describe('Revenant', function() {
 
@@ -64,7 +65,7 @@ describe('Revenant', function() {
   });
 
   describe('#createMD5', function() {
-    var revenant = new Revenant(rutracker, { username: '.', password: '.' });
+    var revenant = new Revenant(rutracker, credentials);
     var object = {
       state: 1,
       id: 'A',
@@ -98,7 +99,52 @@ describe('Revenant', function() {
   });
 
   describe('#getNewResults', function() {
+    var revenant = new Revenant(rutracker, credentials);
 
+    it('should return correct new results', function() {
+      var savedState = {
+        'A': '1',
+        'B': '2',
+        'C': '3'
+      };
+
+      var results = [
+        { id: 'E' },
+        { id: 'B' },
+        { id: 'C' },
+        { id: 'D' }        
+      ];
+
+      var newResults = revenant.getNewResults(savedState, results);
+      expect(newResults).to.be.deep.equal([
+        { id: 'E' },
+        { id: 'D' }
+      ]);
+    });
+  });
+
+  describe('#getUpdatedResults', function() {
+    var revenant = new Revenant(rutracker, credentials);
+
+    it('should return correct updated results', function() {
+      var savedState = {
+        'A': revenant.createMD5({ id: 'A', state: 'A' }),
+        'B': revenant.createMD5({ id: 'B', state: 'B' }),
+        'C': revenant.createMD5({ id: 'C', state: 'C' })
+      };
+
+      var results = [
+        { id: 'A', state: 'A' },
+        { id: 'B', state: 'Z' },
+        { id: 'C', state: 'C' },
+        { id: 'D', state: 'D' }        
+      ];
+
+      var newResults = revenant.getUpdatedResults(savedState, results);
+      expect(newResults).to.be.deep.equal([
+        { id: 'B', state: 'Z' },
+      ]);
+    });
   });
 
   describe('#update', function() {
