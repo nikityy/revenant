@@ -25,9 +25,15 @@ function startWatch(config) {
       revenant     = new Revenant(rutracker, config);
 
   revenant.on('login', function() {
+    revenant.on('new', function(updates) {
+      updates.forEach(function(update) {
+        console.log(greenTextColor('NEW:') + ' [' + update.size + ']: ' + update.title + '\n');
+      });
+    });
+
     revenant.on('update', function(updates) {
       updates.forEach(function(update) {
-        console.log(redTextColor('NEW:') + ' [' + update.size + ']: ' + update.title + '\n');
+        console.log(orangeTextColor('UPDATE:') + ' [' + update.size + ']: ' + update.title + '\n');
       });
     });
     revenant.on('finishUpdate', process.exit);
@@ -35,6 +41,10 @@ function startWatch(config) {
   });
 }
 
-function redTextColor(text) {
+function greenTextColor(text) {
   return '\033[1;32m' + text + '\033[0m';
+}
+
+function orangeTextColor(text) {
+  return '\033[1;33m' + text + '\033[0m';
 }
