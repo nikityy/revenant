@@ -27,13 +27,13 @@ function startWatch(config) {
   revenant.on('login', function() {
     revenant.on('new', function(updates) {
       updates.forEach(function(update) {
-        console.log(greenTextColor('NEW:') + ' [' + update.size + ']: ' + update.title + '\n' + update.url + '\n');
+        console.log(greenTextColor('NEW:') + ' [' + update.formattedSize + ']: ' + update.title + '\n' + update.url + '\n');
       });
     });
 
     revenant.on('update', function(updates) {
       updates.forEach(function(update) {
-        console.log(orangeTextColor('UPDATE:') + ' [' + update.size + ']: ' + update.title + '\n' + update.url + '\n');
+        console.log(orangeTextColor('UPDATE:') + ' [' + update.formattedSize + ']: ' + update.title + '\n' + update.url + '\n');
       });
     });
     revenant.on('finishUpdate', process.exit);
