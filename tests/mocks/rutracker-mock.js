@@ -8,8 +8,8 @@ class RutrackerMock {
     }
   }
 
-  search() {
-    return Promise.resolve();
+  search({ query }) {
+    return Promise.resolve(RutrackerMock.RESULTS[query] || []);
   }
 }
 
@@ -21,6 +21,21 @@ RutrackerMock.VALID_CREDENTIALS = {
 RutrackerMock.INVALID_CREDENTIALS = {
   username: 'cba',
   password: 'cba',
+};
+
+RutrackerMock.RESULTS = {
+  'A': [
+    { id: '1' },
+    { id: '2' },
+    { id: '3' },
+  ],
+  'B': [
+    { id: '4' },
+    { id: '5' },
+  ],
+  'C': [
+    { id: '6' },
+  ],
 };
 
 module.exports = RutrackerMock;

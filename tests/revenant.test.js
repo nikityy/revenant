@@ -3,7 +3,7 @@ const { InvalidCredentialsError } = require('../lib/errors');
 const RutrackerMock = require('./mocks/rutracker-mock');
 const configMock = require('./mocks/config-mock');
 
-const { VALID_CREDENTIALS, INVALID_CREDENTIALS } = RutrackerMock;
+const { VALID_CREDENTIALS, INVALID_CREDENTIALS, RESULTS } = RutrackerMock;
 
 describe('#login', () => {
   test('adds valid credentials to config', () => {
@@ -93,5 +93,32 @@ describe('#removeFromWatchList', () => {
     return revenant.removeFromWatchList('D').then(() => {
       expect(setWatchListMock).toHaveBeenCalledTimes(0);
     });
+  });
+});
+
+describe('#getUpdates', () => {
+  test('resolves with updated items', () => {
+    expect.assertions(1);
+
+    const hasChangedMock = jest.fn().mockReturnValue(true);
+    const getWatchListMock = jest.fn().mockResolvedValue(configMock.watch_list);
+    const revenant = new Revenant();
+    revenant._getWatchList = getWatchListMock;
+    revenant._hasChanged = hasChangedMock;
+    revenant.rutracker = new RutrackerMock();
+
+    return expect(revenant.getUpdates()).resolves.toEqual({
+      'A': RESULTS.A,
+      'B': RESULTS.B,
+      'C': RESULTS.C,
+    });
+  });
+
+  test('adds updated items to config', () => {
+    expect.assertions(1);
+  });
+
+  test('rejects if not authorized', () => {
+    expect.assertions(1);
   });
 });
