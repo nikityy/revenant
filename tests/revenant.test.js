@@ -1,17 +1,21 @@
 const Revenant = require('../lib/revenant');
 const { InvalidCredentialsError } = require('../lib/errors');
 const RutrackerMock = require('./mocks/rutracker-mock');
-const configMock = require('./mocks/config-mock');
+const ConfigMock = require('./mocks/config-mock');
 
 const { VALID_CREDENTIALS, INVALID_CREDENTIALS, RESULTS } = RutrackerMock;
+const { WATCH_LIST } = ConfigMock;
 
 describe('#login', () => {
   test('adds valid credentials to config', () => {
     expect.assertions(2);
 
     const setCredentialsMock = jest.fn().mockResolvedValue(true);
+    const config = new ConfigMock();
+    config.setCredentials = setCredentialsMock;
+
     const revenant = new Revenant();
-    revenant._setCredentials = setCredentialsMock;
+    revenant.config = config;
     revenant.rutracker = new RutrackerMock();
 
     return revenant.login(VALID_CREDENTIALS).then(() => {
@@ -34,30 +38,32 @@ describe('#addToWatchList', () => {
   test('adds item to config', () => {
     expect.assertions(2);
 
-    const getWatchListMock = jest.fn().mockResolvedValue(configMock.watch_list);
     const setWatchListMock = jest.fn().mockResolvedValue(true);
+    const config = new ConfigMock();
+    config.setWatchList = setWatchListMock;
+
     const revenant = new Revenant();
-    revenant._getWatchList = getWatchListMock;
-    revenant._setWatchList = setWatchListMock;
+    revenant.config = config;
     revenant.rutracker = new RutrackerMock();
 
     return revenant.addToWatchList('D').then(() => {
       expect(setWatchListMock).toHaveBeenCalledTimes(1);
-      expect(setWatchListMock).toHaveBeenCalledWith([...configMock.watch_list, 'D']);
+      expect(setWatchListMock).toHaveBeenCalledWith([...WATCH_LIST, 'D']);
     });
   });
 
   test('does nothing if item is already in list', () => {
     expect.assertions(1);
 
-    const getWatchListMock = jest.fn().mockResolvedValue(configMock.watch_list);
     const setWatchListMock = jest.fn().mockResolvedValue(true);
+    const config = new ConfigMock();
+    config.setWatchList = setWatchListMock;
+
     const revenant = new Revenant();
-    revenant._getWatchList = getWatchListMock;
-    revenant._setWatchList = setWatchListMock;
+    revenant.config = config;
     revenant.rutracker = new RutrackerMock();
 
-    return revenant.addToWatchList(configMock.watch_list[0]).then(() => {
+    return revenant.addToWatchList(WATCH_LIST[0]).then(() => {
       expect(setWatchListMock).toHaveBeenCalledTimes(0);
     });
   });
@@ -67,27 +73,29 @@ describe('#removeFromWatchList', () => {
   test('removes item from config', () => {
     expect.assertions(2);
 
-    const getWatchListMock = jest.fn().mockResolvedValue(configMock.watch_list);
     const setWatchListMock = jest.fn().mockResolvedValue(true);
+    const config = new ConfigMock();
+    config.setWatchList = setWatchListMock;
+
     const revenant = new Revenant();
-    revenant._getWatchList = getWatchListMock;
-    revenant._setWatchList = setWatchListMock;
+    revenant.config = config;
     revenant.rutracker = new RutrackerMock();
 
     return revenant.removeFromWatchList('B').then(() => {
       expect(setWatchListMock).toHaveBeenCalledTimes(1);
-      expect(setWatchListMock).toHaveBeenCalledWith(configMock.watch_list.filter(x => x !== 'B'));
+      expect(setWatchListMock).toHaveBeenCalledWith(WATCH_LIST.filter(x => x !== 'B'));
     });
   });
 
   test('does nothing if item is not in list', () => {
     expect.assertions(1);
 
-    const getWatchListMock = jest.fn().mockResolvedValue(configMock.watch_list);
     const setWatchListMock = jest.fn().mockResolvedValue(true);
+    const config = new ConfigMock();
+    config.setWatchList = setWatchListMock;
+
     const revenant = new Revenant();
-    revenant._getWatchList = getWatchListMock;
-    revenant._setWatchList = setWatchListMock;
+    revenant.config = config;
     revenant.rutracker = new RutrackerMock();
 
     return revenant.removeFromWatchList('D').then(() => {
@@ -101,10 +109,10 @@ describe('#getUpdates', () => {
     expect.assertions(1);
 
     const hasChangedMock = jest.fn().mockReturnValue(true);
-    const getWatchListMock = jest.fn().mockResolvedValue(configMock.watch_list);
+
     const revenant = new Revenant();
-    revenant._getWatchList = getWatchListMock;
     revenant._hasChanged = hasChangedMock;
+    revenant.config = config;
     revenant.rutracker = new RutrackerMock();
 
     return expect(revenant.getUpdates()).resolves.toEqual({
