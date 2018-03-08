@@ -1,7 +1,14 @@
 class RutrackerMock {
+  constructor() {
+    this.pageProvider = {
+      cookie: null
+    };
+  }
+
   login({ username, password }) {
     const validCredentials = RutrackerMock.VALID_CREDENTIALS;
     if (username === validCredentials.username && password === validCredentials.password) {
+      this.pageProvider.cookie = RutrackerMock.COOKIE;
       return Promise.resolve();
     } else {
       return Promise.reject(Error());
@@ -12,6 +19,8 @@ class RutrackerMock {
     return Promise.resolve(RutrackerMock.RESULTS[query] || []);
   }
 }
+
+RutrackerMock.COOKIE = 'bb-token=XXX';
 
 RutrackerMock.VALID_CREDENTIALS = {
   username: 'abc',

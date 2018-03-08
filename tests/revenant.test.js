@@ -10,17 +10,17 @@ describe('#login', () => {
   test('adds valid credentials to config', () => {
     expect.assertions(2);
 
-    const setCredentialsMock = jest.fn().mockResolvedValue(true);
+    const setCookieMock = jest.fn().mockResolvedValue(true);
     const config = new ConfigMock();
-    config.setCredentials = setCredentialsMock;
+    config.setCookie = setCookieMock;
 
     const revenant = new Revenant();
     revenant.config = config;
     revenant.rutracker = new RutrackerMock();
 
     return revenant.login(VALID_CREDENTIALS).then(() => {
-      expect(setCredentialsMock).toHaveBeenCalledTimes(1);
-      expect(setCredentialsMock).toHaveBeenCalledWith(VALID_CREDENTIALS);
+      expect(setCookieMock).toHaveBeenCalledTimes(1);
+      expect(setCookieMock).toHaveBeenCalledWith(RutrackerMock.COOKIE);
     });
   });
 

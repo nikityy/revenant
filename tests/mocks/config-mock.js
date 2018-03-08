@@ -17,7 +17,7 @@ class ConfigMock {
     return Promise.resolve();
   }
 
-  setCredentials(credentials) {
+  setCookie(cookie) {
     return Promise.resolve();
   }
 }
