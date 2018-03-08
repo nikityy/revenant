@@ -22,6 +22,28 @@ afterEach(() => {
   return removeFile(duplicateConfigPath);
 });
 
+describe('#getCookie', () => {
+  test('resolves in cookie', () => {
+    expect.assertions(1);
+
+    const config = new Config(duplicateConfigPath);
+
+    return expect(config.getCookie()).resolves.toEqual('bb-token=XXX');
+  });
+});
+
+describe('#setCookie', () => {
+  test('writes updated config', () => {
+    expect.assertions(1);
+
+    const config = new Config(duplicateConfigPath);
+
+    return config.setCookie('bb-token=YYY')
+      .then(() => readConfigFile(duplicateConfigPath))
+      .then(config => expect(config.cookie).toEqual('bb-token=YYY'));
+  });
+});
+
 describe('#getWatchList', () => {
   test('resolves in watch list', () => {
     expect.assertions(1);
@@ -38,8 +60,8 @@ describe('#getWatchList', () => {
   });
 });
 
-describe('#getWatchList', () => {
-  test('resolves in watch list', () => {
+describe('#setWatchList', () => {
+  test('writes updated config', () => {
     expect.assertions(1);
 
     const config = new Config(duplicateConfigPath);
