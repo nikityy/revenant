@@ -1,3 +1,5 @@
+const Snapshot = require('../../lib/snapshot');
+
 class ConfigMock {
   getWatchList() {
     return Promise.resolve(ConfigMock.WATCH_LIST)
@@ -7,7 +9,11 @@ class ConfigMock {
     return Promise.resolve();
   }
 
-  getSnapshots() {
+  getSnapshots(queries) {
+    return Promise.resolve(queries.map(query => new Snapshot(ConfigMock.SNAPSHOTS[query])));
+  }
+
+  setSnapshots() {
     return Promise.resolve();
   }
 
@@ -21,5 +27,11 @@ ConfigMock.WATCH_LIST = [
   'B',
   'C'
 ];
+
+ConfigMock.SNAPSHOTS = {
+  'A': [],
+  'B': [],
+  'C': []
+};
 
 module.exports = ConfigMock;

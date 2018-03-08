@@ -108,10 +108,9 @@ describe('#getUpdates', () => {
   test('resolves with updated items', () => {
     expect.assertions(1);
 
-    const hasChangedMock = jest.fn().mockReturnValue(true);
+    const config = new ConfigMock();
 
     const revenant = new Revenant();
-    revenant._hasChanged = hasChangedMock;
     revenant.config = config;
     revenant.rutracker = new RutrackerMock();
 
@@ -123,7 +122,24 @@ describe('#getUpdates', () => {
   });
 
   test('adds updated items to config', () => {
-    expect.assertions(1);
+    expect.assertions(2);
+
+    const setSnapshotsMock = jest.fn().mockResolvedValue(true);
+    const config = new ConfigMock();
+    config.setSnapshots = setSnapshotsMock;
+
+    const revenant = new Revenant();
+    revenant.config = config;
+    revenant.rutracker = new RutrackerMock();
+
+    return revenant.getUpdates().then(() => {
+      expect(setSnapshotsMock).toHaveBeenCalledTimes(1);
+      expect(setSnapshotsMock).toHaveBeenCalledWith({
+        'A': RESULTS.A,
+        'B': RESULTS.B,
+        'C': RESULTS.C,
+      });
+    });
   });
 
   test('rejects if not authorized', () => {
