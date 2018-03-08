@@ -1,6 +1,7 @@
 const fs = require('fs');
 const Config = require('../lib/config');
 const { promisify } = require('../lib/utils');
+const { readConfigFile } = require('./utils');
 
 const originalConfigPath = './tests/mocks/config.json';
 const duplicateConfigPath = './tests/mocks/config-2.json';
@@ -34,5 +35,17 @@ describe('#getWatchList', () => {
       "D",
       "E"
     ]);
+  });
+});
+
+describe('#getWatchList', () => {
+  test('resolves in watch list', () => {
+    expect.assertions(1);
+
+    const config = new Config(duplicateConfigPath);
+
+    return config.setWatchList(['A', 'B', 'C'])
+      .then(() => readConfigFile(duplicateConfigPath))
+      .then(config => expect(config.watch_list).toEqual(['A', 'B', 'C']));
   });
 });
