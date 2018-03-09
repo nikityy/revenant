@@ -60,11 +60,27 @@ commander
       .catch(logErrorAndExit);
   });
 
+commander
+  .command('list')
+  .action(() => {
+    const revenant = new Revenant({
+      configPath: commander.config,
+    });
+
+    revenant.getWatchList()
+      .then(printWatchList)
+      .catch(logErrorAndExit);
+  });
+
 commander.parse(process.argv);
 
 function logErrorAndExit(error) {
   console.error(error);
   process.exit(1);
+}
+
+function printWatchList(watchList) {
+  watchList.forEach(item => console.log(item));
 }
 
 function announceUpdates(updates) {
