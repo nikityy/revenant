@@ -12,6 +12,14 @@
     "start": "node index.js",
     "test": "jest"
   },
+  "files": [
+    "index.js",
+    "lib",
+    "bin"
+  ],
+  "bin": {
+    "revenant": "./bin/revenant.js"
+  },
   "author": "Nikita Gusarov <nickgusarov@gmail.com>",
   "license": "MIT",
   "devDependencies": {
