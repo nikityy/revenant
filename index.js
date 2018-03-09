@@ -1,50 +1,109 @@
-var fs = require('fs');
-var config_file = './config.json';
+const commander = require("commander");
+const chalk = require("chalk");
+const Revenant = require("./lib/revenant");
 
-fs.exists(config_file, function(exist) {
-  if (exist) {
-    try {
-      var stringified = fs.readFileSync(config_file, 'utf8');
-      var config = JSON.parse(stringified);
-    }
-    catch(err){
-      console.error("Invalid config.json: " + err.message);
-      return err;
-    }
-    startWatch(config);
-  } else {
-    console.error('Config.JSON is not available.');
-    return;
+const DEFAULT_CONFIG_PATH = "./.revenantrc.json";
+
+class RevenantCli {
+  constructor() {
+    commander.option(
+      "-c, --config [path]",
+      "path to config file",
+      DEFAULT_CONFIG_PATH
+    );
+
+    commander
+      .command("login")
+      .description("authorize user with username/password pair")
+      .option("-u, --username <str>", "Rutracker account username")
+      .option("-p, --password <str>", "Rutracker account password")
+      .action(options => {
+        const { username, password } = options;
+        const revenant = this.getRevenant();
+
+        revenant
+          .login({ username, password })
+          .then(() => {
+            console.log("Authorization complete");
+          })
+          .catch(this.logErrorAndExit);
+      });
+
+    commander
+      .command("list")
+      .description("display all items in watch list")
+      .action(() => {
+        const revenant = this.getRevenant();
+
+        revenant
+          .getWatchList()
+          .then(this.printWatchList)
+          .catch(this.logErrorAndExit);
+      });
+
+    commander
+      .command("add [query]")
+      .description("add item to watch list")
+      .action(query => {
+        const revenant = this.getRevenant();
+
+        revenant.addToWatchList(query).catch(this.logErrorAndExit);
+      });
+
+    commander
+      .command("remove [query]")
+      .description("remove item from watch list")
+      .action(query => {
+        const revenant = this.getRevenant();
+
+        revenant.removeFromWatchList(query).catch(this.logErrorAndExit);
+      });
+
+    commander
+      .command("check")
+      .description("check updates and print new torrents")
+      .action(() => {
+        const revenant = this.getRevenant();
+
+        revenant
+          .getUpdates()
+          .then(queries => {
+            Object.keys(queries).forEach(query =>
+              this.announceUpdates(queries[query])
+            );
+          })
+          .catch(this.logErrorAndExit);
+      });
   }
-});
 
-function startWatch(config) {
-  var RutrackerApi = require('rutracker-api'),
-      Revenant     = require('./lib/revenant'),
-      rutracker    = new RutrackerApi(),
-      revenant     = new Revenant(rutracker, config);
+  runWithArgv() {
+    commander.parse(process.argv);
+  }
 
-  revenant.on('login', function() {
-    revenant.on('new', function(updates) {
-      updates.forEach(function(update) {
-        console.log(greenTextColor('NEW:') + ' [' + update.formattedSize + ']: ' + update.title + '\n' + update.url + '\n');
-      });
+  getRevenant() {
+    return new Revenant({
+      configPath: commander.config
     });
+  }
 
-    revenant.on('update', function(updates) {
-      updates.forEach(function(update) {
-        console.log(orangeTextColor('UPDATE:') + ' [' + update.formattedSize + ']: ' + update.title + '\n' + update.url + '\n');
-      });
+  logErrorAndExit(error) {
+    console.error(error);
+    process.exit(1);
+  }
+
+  printWatchList(watchList) {
+    watchList.forEach(item => console.log(item));
+  }
+
+  announceUpdates(updates) {
+    updates.forEach(update => {
+      console.log(
+        `${chalk.green("NEW:")} [${update.formattedSize}] ${update.title}\n${
+          update.url
+        }\n`
+      );
     });
-    revenant.on('finishUpdate', process.exit);
-    revenant.update();
-  });
+  }
 }
 
-function greenTextColor(text) {
-  return '\033[1;32m' + text + '\033[0m';
-}
-
-function orangeTextColor(text) {
-  return '\033[1;33m' + text + '\033[0m';
-}
+module.exports = RevenantCli;

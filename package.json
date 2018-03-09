@@ -4,20 +4,34 @@
   "description": "Keeps your RuTracker favourites up to date.",
   "main": "index.js",
   "dependencies": {
-    "async": "^1.5.2",
+    "chalk": "^2.3.2",
+    "commander": "^2.15.0",
     "node-osx-notifier": "^0.1.0",
     "md5": "^2.0.0",
-    "rutracker-api": "^1.0.0",
-    "underscore": "^1.8.3"
+    "rutracker-api": "^1.0.0"
   },
   "scripts": {
     "start": "node index.js",
-    "test": "./node_modules/.bin/mocha test/*.js"
+    "test": "npm run lint && jest",
+    "lint": "eslint ."
+  },
+  "files": [
+    "index.js",
+    "lib",
+    "bin"
+  ],
+  "bin": {
+    "revenant": "./bin/revenant.js"
   },
   "author": "Nikita Gusarov <nickgusarov@gmail.com>",
   "license": "MIT",
   "devDependencies": {
-    "chai": "^3.5.0",
-    "mocha": "^3.2.0"
+    "eslint": "^4.18.0",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-config-prettier": "^2.9.0",
+    "eslint-plugin-import": "^2.8.0",
+    "eslint-plugin-prettier": "^2.6.0",
+    "jest": "^22.4.2",
+    "prettier": "^1.10.2"
   }
 }
