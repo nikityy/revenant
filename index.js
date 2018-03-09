@@ -2,7 +2,7 @@ const commander = require("commander");
 const chalk = require("chalk");
 const Revenant = require("./lib/revenant");
 
-const DEFAULT_CONFIG_PATH = "./config000.json";
+const DEFAULT_CONFIG_PATH = "./.revenantrc.json";
 
 class RevenantCli {
   constructor() {

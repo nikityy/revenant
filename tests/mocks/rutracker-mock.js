@@ -36,9 +36,13 @@ RutrackerMock.INVALID_CREDENTIALS = {
 };
 
 RutrackerMock.RESULTS = {
-  A: [{ id: "1" }, { id: "2" }, { id: "3" }],
-  B: [{ id: "4" }, { id: "5" }],
-  C: [{ id: "6" }]
+  A: [
+    { id: "1", state: "approved" },
+    { id: "2", state: "approved" },
+    { id: "3", state: "approved" }
+  ],
+  B: [{ id: "4", state: "approved" }, { id: "5", state: "approved" }],
+  C: [{ id: "6", state: "approved" }]
 };
 
 module.exports = RutrackerMock;

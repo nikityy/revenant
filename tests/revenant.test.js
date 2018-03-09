@@ -1,10 +1,19 @@
 const Revenant = require("../lib/revenant");
-const { InvalidCredentialsError } = require("../lib/errors");
+const Snapshot = require("../lib/snapshot");
+const {
+  InvalidCredentialsError,
+  NotAuthorizedError
+} = require("../lib/errors");
 const RutrackerMock = require("./mocks/rutracker-mock");
 const ConfigMock = require("./mocks/config-mock");
+const { getHashedSnapshot } = require("./utils");
 
 const { VALID_CREDENTIALS, INVALID_CREDENTIALS, RESULTS } = RutrackerMock;
 const { WATCH_LIST } = ConfigMock;
+
+const REVENANT_CONFIG = {
+  configPath: ""
+};
 
 describe("#login", () => {
   test("adds valid credentials to config", () => {
@@ -14,7 +23,7 @@ describe("#login", () => {
     const config = new ConfigMock();
     config.setCookie = setCookieMock;
 
-    const revenant = new Revenant();
+    const revenant = new Revenant(REVENANT_CONFIG);
     revenant.config = config;
     revenant.rutracker = new RutrackerMock();
 
@@ -27,7 +36,7 @@ describe("#login", () => {
   test("rejects if credentials are invalid", () => {
     expect.assertions(1);
 
-    const revenant = new Revenant();
+    const revenant = new Revenant(REVENANT_CONFIG);
     revenant.rutracker = new RutrackerMock();
 
     return expect(revenant.login(INVALID_CREDENTIALS)).rejects.toThrow(
@@ -44,7 +53,7 @@ describe("#addToWatchList", () => {
     const config = new ConfigMock();
     config.setWatchList = setWatchListMock;
 
-    const revenant = new Revenant();
+    const revenant = new Revenant(REVENANT_CONFIG);
     revenant.config = config;
     revenant.rutracker = new RutrackerMock();
 
@@ -61,7 +70,7 @@ describe("#addToWatchList", () => {
     const config = new ConfigMock();
     config.setWatchList = setWatchListMock;
 
-    const revenant = new Revenant();
+    const revenant = new Revenant(REVENANT_CONFIG);
     revenant.config = config;
     revenant.rutracker = new RutrackerMock();
 
@@ -79,7 +88,7 @@ describe("#removeFromWatchList", () => {
     const config = new ConfigMock();
     config.setWatchList = setWatchListMock;
 
-    const revenant = new Revenant();
+    const revenant = new Revenant(REVENANT_CONFIG);
     revenant.config = config;
     revenant.rutracker = new RutrackerMock();
 
@@ -98,7 +107,7 @@ describe("#removeFromWatchList", () => {
     const config = new ConfigMock();
     config.setWatchList = setWatchListMock;
 
-    const revenant = new Revenant();
+    const revenant = new Revenant(REVENANT_CONFIG);
     revenant.config = config;
     revenant.rutracker = new RutrackerMock();
 
@@ -114,7 +123,7 @@ describe("#getUpdates", () => {
 
     const config = new ConfigMock();
 
-    const revenant = new Revenant();
+    const revenant = new Revenant(REVENANT_CONFIG);
     revenant.config = config;
     revenant.rutracker = new RutrackerMock();
 
@@ -132,21 +141,32 @@ describe("#getUpdates", () => {
     const config = new ConfigMock();
     config.setSnapshots = setSnapshotsMock;
 
-    const revenant = new Revenant();
+    const revenant = new Revenant(REVENANT_CONFIG);
     revenant.config = config;
     revenant.rutracker = new RutrackerMock();
 
     return revenant.getUpdates().then(() => {
       expect(setSnapshotsMock).toHaveBeenCalledTimes(1);
-      expect(setSnapshotsMock).toHaveBeenCalledWith({
-        A: RESULTS.A,
-        B: RESULTS.B,
-        C: RESULTS.C
-      });
+      expect(setSnapshotsMock).toHaveBeenCalledWith(
+        Snapshot.fromJSON({
+          A: getHashedSnapshot(RESULTS.A),
+          B: getHashedSnapshot(RESULTS.B),
+          C: getHashedSnapshot(RESULTS.C)
+        })
+      );
     });
   });
 
   test("rejects if not authorized", () => {
     expect.assertions(1);
+
+    const config = new ConfigMock();
+    config.getCookie = jest.fn().mockResolvedValue(null);
+
+    const revenant = new Revenant(REVENANT_CONFIG);
+    revenant.config = config;
+    revenant.rutracker = new RutrackerMock();
+
+    return expect(revenant.getUpdates()).rejects.toThrow(NotAuthorizedError);
   });
 });

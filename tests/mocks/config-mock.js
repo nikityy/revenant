@@ -1,6 +1,10 @@
 const Snapshot = require("../../lib/snapshot");
 
 class ConfigMock {
+  getCookie() {
+    return Promise.resolve(ConfigMock.COOKIE);
+  }
+
   getWatchList() {
     return Promise.resolve(ConfigMock.WATCH_LIST);
   }
@@ -23,6 +27,8 @@ class ConfigMock {
     return Promise.resolve();
   }
 }
+
+ConfigMock.COOKIE = "bb-token=XXX";
 
 ConfigMock.WATCH_LIST = ["A", "B", "C"];
 
