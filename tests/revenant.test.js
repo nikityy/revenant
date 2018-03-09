@@ -1,5 +1,4 @@
 const Revenant = require("../lib/revenant");
-const Snapshot = require("../lib/snapshot");
 const {
   InvalidCredentialsError,
   NotAuthorizedError
@@ -147,13 +146,11 @@ describe("#getUpdates", () => {
 
     return revenant.getUpdates().then(() => {
       expect(setSnapshotsMock).toHaveBeenCalledTimes(1);
-      expect(setSnapshotsMock).toHaveBeenCalledWith(
-        Snapshot.fromJSON({
-          A: getHashedSnapshot(RESULTS.A),
-          B: getHashedSnapshot(RESULTS.B),
-          C: getHashedSnapshot(RESULTS.C)
-        })
-      );
+      expect(setSnapshotsMock).toHaveBeenCalledWith({
+        A: getHashedSnapshot(RESULTS.A),
+        B: getHashedSnapshot(RESULTS.B),
+        C: getHashedSnapshot(RESULTS.C)
+      });
     });
   });
 

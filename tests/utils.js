@@ -1,5 +1,6 @@
 const fs = require("fs");
 const md5 = require("md5");
+const Snapshot = require("../lib/snapshot");
 const { promisify } = require("../lib/utils");
 
 const readFile = promisify(fs.readFile);
@@ -13,11 +14,12 @@ module.exports = {
 
       return obj;
     }, {});
-
-    return Object.keys(snapshot).reduce((obj, key) => {
+    const json = Object.keys(snapshot).reduce((obj, key) => {
       obj[key] = md5(JSON.stringify(snapshot[key]));
 
       return obj;
-    }, {})
+    }, {});
+
+    return Snapshot.fromJSON(json);
   }
 };
