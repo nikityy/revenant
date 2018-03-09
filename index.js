@@ -4,17 +4,16 @@ const Revenant = require('./lib/revenant');
 const DEFAULT_CONFIG_PATH = './config000.json';
 
 commander
-  .option('-c, --config [path]', 'path to config file, defaults to ...', DEFAULT_CONFIG_PATH);
+  .option('-c, --config [path]', 'path to config file', DEFAULT_CONFIG_PATH);
 
 commander
   .command('login')
-  .option('-u, --username <path>', 'Rutracker account username')
-  .option('-p, --password <path>', 'Rutracker account password')
+  .description('authorize user with username/password pair')
+  .option('-u, --username <str>', 'Rutracker account username')
+  .option('-p, --password <str>', 'Rutracker account password')
   .action((options) => {
     const { username, password } = options;
-    const revenant = new Revenant({
-      configPath: commander.config,
-    });
+    const revenant = getRevenant();
 
     revenant.login({ username, password })
       .then(() => {
@@ -24,11 +23,21 @@ commander
   });
 
 commander
+  .command('list')
+  .description('display all items in watch list')
+  .action(() => {
+    const revenant = getRevenant();
+
+    revenant.getWatchList()
+      .then(printWatchList)
+      .catch(logErrorAndExit);
+  });
+
+commander
   .command('add [query]')
+  .description('add item to watch list')
   .action((query, ...args) => {
-    const revenant = new Revenant({
-      configPath: commander.config,
-    });
+    const revenant = getRevenant();
 
     revenant.addToWatchList(query)
       .catch(logErrorAndExit);
@@ -36,10 +45,9 @@ commander
 
 commander
   .command('remove [query]')
+  .description('remove item from watch list')
   .action((query, ...args) => {
-    const revenant = new Revenant({
-      configPath: commander.config,
-    });
+    const revenant = getRevenant();
 
     revenant.removeFromWatchList(query)
       .catch(logErrorAndExit);
@@ -47,10 +55,9 @@ commander
 
 commander
   .command('check')
+  .description('check updates and print new torrents')
   .action(() => {
-    const revenant = new Revenant({
-      configPath: commander.config,
-    });
+    const revenant = getRevenant();
 
     revenant.getUpdates()
       .then(queries => {
@@ -60,19 +67,13 @@ commander
       .catch(logErrorAndExit);
   });
 
-commander
-  .command('list')
-  .action(() => {
-    const revenant = new Revenant({
-      configPath: commander.config,
-    });
-
-    revenant.getWatchList()
-      .then(printWatchList)
-      .catch(logErrorAndExit);
-  });
-
 commander.parse(process.argv);
+
+function getRevenant() {
+  return new Revenant({
+    configPath: commander.config,
+  });
+}
 
 function logErrorAndExit(error) {
   console.error(error);
