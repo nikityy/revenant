@@ -1,51 +1,53 @@
-const fs = require('fs');
-const Config = require('../lib/config');
-const { promisify } = require('../lib/utils');
-const { readConfigFile } = require('./utils');
+const fs = require("fs");
+const Config = require("../lib/config");
+const { promisify } = require("../lib/utils");
+const { readConfigFile } = require("./utils");
 
-const originalConfigPath = './tests/mocks/config.json';
-const duplicateConfigPath = './tests/mocks/config-2.json';
-const createReadStream = fs.createReadStream;
-const createWriteStream = fs.createWriteStream;
+const originalConfigPath = "./tests/mocks/config.json";
+const duplicateConfigPath = "./tests/mocks/config-2.json";
 const removeFile = promisify(fs.unlink);
 
-beforeEach(() => {
-  return new Promise((resolve, reject) => {
-    const stream = createReadStream(originalConfigPath).pipe(createWriteStream(duplicateConfigPath));
+beforeEach(
+  () =>
+    new Promise((resolve, reject) => {
+      const stream = fs
+        .createReadStream(originalConfigPath)
+        .pipe(fs.createWriteStream(duplicateConfigPath));
 
-    stream.on('close', resolve);
-    stream.on('error', reject);
-  });
-});
+      stream.on("close", resolve);
+      stream.on("error", reject);
+    })
+);
 
-afterEach(() => {
-  return removeFile(duplicateConfigPath);
-});
+afterEach(() => removeFile(duplicateConfigPath));
 
-describe('#getCookie', () => {
-  test('resolves in cookie', () => {
+describe("#getCookie", () => {
+  test("resolves in cookie", () => {
     expect.assertions(1);
 
     const config = new Config(duplicateConfigPath);
 
-    return expect(config.getCookie()).resolves.toEqual('bb-token=XXX');
+    return expect(config.getCookie()).resolves.toEqual("bb-token=XXX");
   });
 });
 
-describe('#setCookie', () => {
-  test('writes updated config', () => {
+describe("#setCookie", () => {
+  test("writes updated config", () => {
     expect.assertions(1);
 
     const config = new Config(duplicateConfigPath);
 
-    return config.setCookie('bb-token=YYY')
+    return config
+      .setCookie("bb-token=YYY")
       .then(() => readConfigFile(duplicateConfigPath))
-      .then(config => expect(config.cookie).toEqual('bb-token=YYY'));
+      .then(actualConfig =>
+        expect(actualConfig.cookie).toEqual("bb-token=YYY")
+      );
   });
 });
 
-describe('#getWatchList', () => {
-  test('resolves in watch list', () => {
+describe("#getWatchList", () => {
+  test("resolves in watch list", () => {
     expect.assertions(1);
 
     const config = new Config(duplicateConfigPath);
@@ -60,14 +62,17 @@ describe('#getWatchList', () => {
   });
 });
 
-describe('#setWatchList', () => {
-  test('writes updated config', () => {
+describe("#setWatchList", () => {
+  test("writes updated config", () => {
     expect.assertions(1);
 
     const config = new Config(duplicateConfigPath);
 
-    return config.setWatchList(['A', 'B', 'C'])
+    return config
+      .setWatchList(["A", "B", "C"])
       .then(() => readConfigFile(duplicateConfigPath))
-      .then(config => expect(config.watch_list).toEqual(['A', 'B', 'C']));
+      .then(actualConfig =>
+        expect(actualConfig.watch_list).toEqual(["A", "B", "C"])
+      );
   });
 });

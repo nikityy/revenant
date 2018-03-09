@@ -1,13 +1,13 @@
-const Revenant = require('../lib/revenant');
-const { InvalidCredentialsError } = require('../lib/errors');
-const RutrackerMock = require('./mocks/rutracker-mock');
-const ConfigMock = require('./mocks/config-mock');
+const Revenant = require("../lib/revenant");
+const { InvalidCredentialsError } = require("../lib/errors");
+const RutrackerMock = require("./mocks/rutracker-mock");
+const ConfigMock = require("./mocks/config-mock");
 
 const { VALID_CREDENTIALS, INVALID_CREDENTIALS, RESULTS } = RutrackerMock;
 const { WATCH_LIST } = ConfigMock;
 
-describe('#login', () => {
-  test('adds valid credentials to config', () => {
+describe("#login", () => {
+  test("adds valid credentials to config", () => {
     expect.assertions(2);
 
     const setCookieMock = jest.fn().mockResolvedValue(true);
@@ -24,18 +24,20 @@ describe('#login', () => {
     });
   });
 
-  test('rejects if credentials are invalid', () => {
+  test("rejects if credentials are invalid", () => {
     expect.assertions(1);
 
     const revenant = new Revenant();
     revenant.rutracker = new RutrackerMock();
 
-    return expect(revenant.login(INVALID_CREDENTIALS)).rejects.toThrow(InvalidCredentialsError);
+    return expect(revenant.login(INVALID_CREDENTIALS)).rejects.toThrow(
+      InvalidCredentialsError
+    );
   });
 });
 
-describe('#addToWatchList', () => {
-  test('adds item to config', () => {
+describe("#addToWatchList", () => {
+  test("adds item to config", () => {
     expect.assertions(2);
 
     const setWatchListMock = jest.fn().mockResolvedValue(true);
@@ -46,13 +48,13 @@ describe('#addToWatchList', () => {
     revenant.config = config;
     revenant.rutracker = new RutrackerMock();
 
-    return revenant.addToWatchList('D').then(() => {
+    return revenant.addToWatchList("D").then(() => {
       expect(setWatchListMock).toHaveBeenCalledTimes(1);
-      expect(setWatchListMock).toHaveBeenCalledWith([...WATCH_LIST, 'D']);
+      expect(setWatchListMock).toHaveBeenCalledWith([...WATCH_LIST, "D"]);
     });
   });
 
-  test('does nothing if item is already in list', () => {
+  test("does nothing if item is already in list", () => {
     expect.assertions(1);
 
     const setWatchListMock = jest.fn().mockResolvedValue(true);
@@ -69,8 +71,8 @@ describe('#addToWatchList', () => {
   });
 });
 
-describe('#removeFromWatchList', () => {
-  test('removes item from config', () => {
+describe("#removeFromWatchList", () => {
+  test("removes item from config", () => {
     expect.assertions(2);
 
     const setWatchListMock = jest.fn().mockResolvedValue(true);
@@ -81,13 +83,15 @@ describe('#removeFromWatchList', () => {
     revenant.config = config;
     revenant.rutracker = new RutrackerMock();
 
-    return revenant.removeFromWatchList('B').then(() => {
+    return revenant.removeFromWatchList("B").then(() => {
       expect(setWatchListMock).toHaveBeenCalledTimes(1);
-      expect(setWatchListMock).toHaveBeenCalledWith(WATCH_LIST.filter(x => x !== 'B'));
+      expect(setWatchListMock).toHaveBeenCalledWith(
+        WATCH_LIST.filter(x => x !== "B")
+      );
     });
   });
 
-  test('does nothing if item is not in list', () => {
+  test("does nothing if item is not in list", () => {
     expect.assertions(1);
 
     const setWatchListMock = jest.fn().mockResolvedValue(true);
@@ -98,14 +102,14 @@ describe('#removeFromWatchList', () => {
     revenant.config = config;
     revenant.rutracker = new RutrackerMock();
 
-    return revenant.removeFromWatchList('D').then(() => {
+    return revenant.removeFromWatchList("D").then(() => {
       expect(setWatchListMock).toHaveBeenCalledTimes(0);
     });
   });
 });
 
-describe('#getUpdates', () => {
-  test('resolves with updated items', () => {
+describe("#getUpdates", () => {
+  test("resolves with updated items", () => {
     expect.assertions(1);
 
     const config = new ConfigMock();
@@ -115,13 +119,13 @@ describe('#getUpdates', () => {
     revenant.rutracker = new RutrackerMock();
 
     return expect(revenant.getUpdates()).resolves.toEqual({
-      'A': RESULTS.A,
-      'B': RESULTS.B,
-      'C': RESULTS.C,
+      A: RESULTS.A,
+      B: RESULTS.B,
+      C: RESULTS.C
     });
   });
 
-  test('adds updated items to config', () => {
+  test("adds updated items to config", () => {
     expect.assertions(2);
 
     const setSnapshotsMock = jest.fn().mockResolvedValue(true);
@@ -135,14 +139,14 @@ describe('#getUpdates', () => {
     return revenant.getUpdates().then(() => {
       expect(setSnapshotsMock).toHaveBeenCalledTimes(1);
       expect(setSnapshotsMock).toHaveBeenCalledWith({
-        'A': RESULTS.A,
-        'B': RESULTS.B,
-        'C': RESULTS.C,
+        A: RESULTS.A,
+        B: RESULTS.B,
+        C: RESULTS.C
       });
     });
   });
 
-  test('rejects if not authorized', () => {
+  test("rejects if not authorized", () => {
     expect.assertions(1);
   });
 });

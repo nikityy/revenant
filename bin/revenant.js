@@ -1,3 +1,6 @@
 #!/usr/bin/env node
 
-require('../');
+const RevenantCli = require("../");
+
+const cli = new RevenantCli();
+cli.runWithArgv();
