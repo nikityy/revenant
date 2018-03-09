@@ -4,15 +4,13 @@
   "description": "Keeps your RuTracker favourites up to date.",
   "main": "index.js",
   "dependencies": {
-    "async": "^1.5.2",
     "node-osx-notifier": "^0.1.0",
     "md5": "^2.0.0",
-    "rutracker-api": "^1.0.0",
-    "underscore": "^1.8.3"
+    "rutracker-api": "^1.0.0"
   },
   "scripts": {
     "start": "node index.js",
-    "test": "./node_modules/.bin/mocha test/*.js"
+    "test": "jest"
   },
   "author": "Nikita Gusarov <nickgusarov@gmail.com>",
   "license": "MIT",
