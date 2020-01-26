@@ -41,7 +41,10 @@ RutrackerMock.RESULTS = {
     { id: "2", state: "approved" },
     { id: "3", state: "approved" }
   ],
-  B: [{ id: "4", state: "approved" }, { id: "5", state: "approved" }],
+  B: [
+    { id: "4", state: "approved" },
+    { id: "5", state: "approved" }
+  ],
   C: [{ id: "6", state: "approved" }]
 };
 
