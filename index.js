@@ -1,5 +1,6 @@
 const commander = require("commander");
 const chalk = require("chalk");
+const Config = require("./lib/config");
 const Revenant = require("./lib/revenant");
 
 const DEFAULT_CONFIG_PATH = `${process.env.HOME}/.revenantrc.json`;
@@ -81,9 +82,9 @@ class RevenantCli {
   }
 
   getRevenant() {
-    return new Revenant({
-      configPath: commander.config
-    });
+    const config = new Config(commander.config);
+
+    return new Revenant({ config });
   }
 
   logErrorAndExit(error) {
