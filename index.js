@@ -1,5 +1,7 @@
 const commander = require("commander");
 const chalk = require("chalk");
+const RutrackerApi = require("rutracker-api");
+
 const Config = require("./lib/config");
 const Revenant = require("./lib/revenant");
 
@@ -83,8 +85,9 @@ class RevenantCli {
 
   getRevenant() {
     const config = new Config(commander.config);
+    const rutracker = new RutrackerApi();
 
-    return new Revenant({ config });
+    return new Revenant({ config, rutracker });
   }
 
   logErrorAndExit(error) {

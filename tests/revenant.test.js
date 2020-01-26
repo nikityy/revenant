@@ -10,10 +10,6 @@ const { getHashedSnapshot } = require("./utils");
 const { VALID_CREDENTIALS, INVALID_CREDENTIALS, RESULTS } = RutrackerMock;
 const { WATCH_LIST } = ConfigMock;
 
-const REVENANT_CONFIG = {
-  configPath: ""
-};
-
 describe("#login", () => {
   test("adds valid credentials to config", () => {
     expect.assertions(2);
@@ -22,9 +18,10 @@ describe("#login", () => {
     const config = new ConfigMock();
     config.setCookie = setCookieMock;
 
-    const revenant = new Revenant(REVENANT_CONFIG);
-    revenant.config = config;
-    revenant.rutracker = new RutrackerMock();
+    const revenant = new Revenant({
+      config,
+      rutracker: new RutrackerMock()
+    });
 
     return revenant.login(VALID_CREDENTIALS).then(() => {
       expect(setCookieMock).toHaveBeenCalledTimes(1);
@@ -35,8 +32,9 @@ describe("#login", () => {
   test("rejects if credentials are invalid", () => {
     expect.assertions(1);
 
-    const revenant = new Revenant(REVENANT_CONFIG);
-    revenant.rutracker = new RutrackerMock();
+    const revenant = new Revenant({
+      rutracker: new RutrackerMock()
+    });
 
     return expect(revenant.login(INVALID_CREDENTIALS)).rejects.toThrow(
       InvalidCredentialsError
@@ -52,9 +50,10 @@ describe("#addToWatchList", () => {
     const config = new ConfigMock();
     config.setWatchList = setWatchListMock;
 
-    const revenant = new Revenant(REVENANT_CONFIG);
-    revenant.config = config;
-    revenant.rutracker = new RutrackerMock();
+    const revenant = new Revenant({
+      config,
+      rutracker: new RutrackerMock()
+    });
 
     return revenant.addToWatchList("D").then(() => {
       expect(setWatchListMock).toHaveBeenCalledTimes(1);
@@ -69,9 +68,10 @@ describe("#addToWatchList", () => {
     const config = new ConfigMock();
     config.setWatchList = setWatchListMock;
 
-    const revenant = new Revenant(REVENANT_CONFIG);
-    revenant.config = config;
-    revenant.rutracker = new RutrackerMock();
+    const revenant = new Revenant({
+      config,
+      rutracker: new RutrackerMock()
+    });
 
     return revenant.addToWatchList(WATCH_LIST[0]).then(() => {
       expect(setWatchListMock).toHaveBeenCalledTimes(0);
@@ -87,9 +87,10 @@ describe("#removeFromWatchList", () => {
     const config = new ConfigMock();
     config.setWatchList = setWatchListMock;
 
-    const revenant = new Revenant(REVENANT_CONFIG);
-    revenant.config = config;
-    revenant.rutracker = new RutrackerMock();
+    const revenant = new Revenant({
+      config,
+      rutracker: new RutrackerMock()
+    });
 
     return revenant.removeFromWatchList("B").then(() => {
       expect(setWatchListMock).toHaveBeenCalledTimes(1);
@@ -106,9 +107,10 @@ describe("#removeFromWatchList", () => {
     const config = new ConfigMock();
     config.setWatchList = setWatchListMock;
 
-    const revenant = new Revenant(REVENANT_CONFIG);
-    revenant.config = config;
-    revenant.rutracker = new RutrackerMock();
+    const revenant = new Revenant({
+      config,
+      rutracker: new RutrackerMock()
+    });
 
     return revenant.removeFromWatchList("D").then(() => {
       expect(setWatchListMock).toHaveBeenCalledTimes(0);
@@ -122,9 +124,10 @@ describe("#getUpdates", () => {
 
     const config = new ConfigMock();
 
-    const revenant = new Revenant(REVENANT_CONFIG);
-    revenant.config = config;
-    revenant.rutracker = new RutrackerMock();
+    const revenant = new Revenant({
+      config,
+      rutracker: new RutrackerMock()
+    });
 
     return expect(revenant.getUpdates()).resolves.toEqual({
       A: RESULTS.A,
@@ -140,9 +143,10 @@ describe("#getUpdates", () => {
     const config = new ConfigMock();
     config.setSnapshots = setSnapshotsMock;
 
-    const revenant = new Revenant(REVENANT_CONFIG);
-    revenant.config = config;
-    revenant.rutracker = new RutrackerMock();
+    const revenant = new Revenant({
+      config,
+      rutracker: new RutrackerMock()
+    });
 
     return revenant.getUpdates().then(() => {
       expect(setSnapshotsMock).toHaveBeenCalledTimes(1);
@@ -160,9 +164,10 @@ describe("#getUpdates", () => {
     const config = new ConfigMock();
     config.getCookie = jest.fn().mockResolvedValue(null);
 
-    const revenant = new Revenant(REVENANT_CONFIG);
-    revenant.config = config;
-    revenant.rutracker = new RutrackerMock();
+    const revenant = new Revenant({
+      config,
+      rutracker: new RutrackerMock()
+    });
 
     return expect(revenant.getUpdates()).rejects.toThrow(NotAuthorizedError);
   });
