@@ -1,7 +1,8 @@
 const fs = require("fs");
 const md5 = require("md5");
+const { promisify } = require("util");
+
 const Snapshot = require("../lib/snapshot");
-const { promisify } = require("../lib/utils");
 
 const readFile = promisify(fs.readFile);
 

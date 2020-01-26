@@ -1,6 +1,7 @@
 const fs = require("fs");
+const { promisify } = require("util");
+
 const Config = require("../lib/config");
-const { promisify } = require("../lib/utils");
 const { readConfigFile } = require("./utils");
 
 const originalConfigPath = "./tests/mocks/config.json";
