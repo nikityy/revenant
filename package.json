@@ -7,7 +7,7 @@
     "chalk": "^2.3.2",
     "commander": "^2.15.0",
     "md5": "^2.0.0",
-    "rutracker-api": "^1.0.0"
+    "rutracker-api": "^1.1.0"
   },
   "scripts": {
     "start": "node index.js",
