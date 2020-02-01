@@ -41,7 +41,9 @@ function getWatchlistClient(config) {
   const { watchUrl } = config.kinopoisk;
 
   if (!watchUrl) {
-    throw new Error("Kinopoisk watch url is not defined. Use 'watch' command first");
+    throw new Error(
+      "Kinopoisk watch url is not defined. Use 'watch' command first"
+    );
   }
 
   return new KinopoiskWatchlist(watchUrl);
@@ -105,7 +107,7 @@ function runRevenant(argv) {
     .option("-u, --username <str>", "Rutracker account username")
     .option("-p, --password <str>", "Rutracker account password")
     .action(createCommand(login));
-  
+
   commander
     .command("watch [url]")
     .description("set kinopoisk movies list watch url")
