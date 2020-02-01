@@ -6,7 +6,7 @@ const { readConfigFile, writeConfigFile } = require("./lib/config");
 const KinopoiskWatchlist = require("./lib/kinopoisk-watchlist");
 const {
   authenticate,
-  downloadNewTorrents,
+  downloadTorrents,
   fetchNewTorrents,
   fetchWatchlist
 } = require("./lib/revenant");
@@ -60,7 +60,7 @@ function login(config, options) {
   return authenticate(rutracker, credentials, config);
 }
 
-async function downloadTorrents(config, options) {
+async function downloadNewTorrents(config, options) {
   const newConfig = { ...config };
 
   if (options.directory) {
@@ -69,9 +69,12 @@ async function downloadTorrents(config, options) {
 
   const rutracker = getRutrackerClient(newConfig);
   const watchlistClient = getWatchlistClient(newConfig);
-  const [, lastConfig] = await fetchWatchlist(watchlistClient, newConfig);
+  const [, newerConfig] = await fetchWatchlist(watchlistClient, newConfig);
+  const [torrents, lastConfig] = await fetchNewTorrents(rutracker, newerConfig);
 
-  return downloadNewTorrents(rutracker, lastConfig);
+  await downloadTorrents(rutracker, torrents, lastConfig);
+
+  return lastConfig;
 }
 
 async function showWatchlist(config) {
@@ -132,7 +135,7 @@ function runRevenant(argv) {
     .command("download")
     .description("downloads new torrent files")
     .option("-d, --directory <str>", "download path")
-    .action(createCommand(downloadTorrents));
+    .action(createCommand(downloadNewTorrents));
 
   commander
     .command("list")
