@@ -2,7 +2,7 @@ const commander = require("commander");
 const chalk = require("chalk");
 const RutrackerApi = require("rutracker-api");
 
-const Config = require("./lib/config");
+const KinopoiskConfig = require("./lib/kinopoisk-config");
 const Revenant = require("./lib/revenant");
 
 const DEFAULT_CONFIG_PATH = `${process.env.HOME}/.revenantrc.json`;
@@ -84,7 +84,7 @@ class RevenantCli {
   }
 
   getRevenant() {
-    const config = new Config(commander.config);
+    const config = new KinopoiskConfig(commander.config);
     const rutracker = new RutrackerApi();
 
     return new Revenant({ config, rutracker });

@@ -4,9 +4,10 @@
   "description": "Keeps your RuTracker favourites up to date.",
   "main": "index.js",
   "dependencies": {
+    "axios": "^0.19.2",
     "chalk": "^2.3.2",
+    "cheerio": "^1.0.0-rc.3",
     "commander": "^2.15.0",
-    "md5": "^2.0.0",
     "rutracker-api": "^1.1.0"
   },
   "scripts": {
@@ -28,7 +29,6 @@
     "eslint": "^4.18.0",
     "eslint-config-airbnb-base": "^12.1.0",
     "eslint-config-prettier": "^2.9.0",
-    "eslint-plugin-import": "^2.8.0",
     "eslint-plugin-prettier": "^2.6.0",
     "jest": "^22.4.2",
     "prettier": "^1.10.2"
