@@ -69,15 +69,11 @@ function createCommand(handler) {
   };
 }
 
-function getRutrackerClient(config) {
-  const rutracker = new RutrackerApi();
-
-  if (config.rutracker.cookie) {
+function setupRutracker(rutracker, config) {
+  if (rutracker.cookie) {
     rutracker.pageProvider.authorized = true;
     rutracker.pageProvider.cookie = config.rutracker.cookie;
   }
-
-  return rutracker;
 }
 
 function fetchWatchlist(config) {
@@ -98,6 +94,8 @@ function fetchWatchlist(config) {
 }
 
 function runRevenant(argv) {
+  const rutracker = new RutrackerApi();
+
   commander.option(
     "-c, --config [path]",
     "path to config file",
@@ -115,7 +113,8 @@ function runRevenant(argv) {
           username: options.username,
           password: options.password
         };
-        const rutracker = getRutrackerClient(config);
+
+        setupRutracker(rutracker, config);
 
         await rutracker.login(credentials);
 
@@ -150,7 +149,8 @@ function runRevenant(argv) {
           newConfig.downloadPath = options.directory;
         }
 
-        const rutracker = getRutrackerClient(newConfig);
+        setupRutracker(rutracker, config);
+
         const watchlist = await fetchWatchlist(newConfig);
         const torrents = await fetchTorrents(rutracker, watchlist);
         const newTorrents = getNewTorrents(torrents, config.torrents);
@@ -183,7 +183,8 @@ function runRevenant(argv) {
     .description("check updates and print new torrents")
     .action(
       createCommand(async config => {
-        const rutracker = getRutrackerClient(config);
+        setupRutracker(rutracker, config);
+
         const watchlist = await fetchWatchlist(config);
         const torrents = await fetchTorrents(rutracker, watchlist);
         const newTorrents = getNewTorrents(torrents, config.torrents);
