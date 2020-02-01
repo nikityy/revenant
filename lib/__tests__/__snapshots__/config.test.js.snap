@@ -5,7 +5,7 @@ Object {
   "downloadPath": "~",
   "kinopoisk": Object {
     "listId": null,
-    "usedId": null,
+    "userId": null,
   },
   "rutracker": Object {
     "cookie": null,
@@ -21,7 +21,7 @@ Object {
   "downloadPath": "~/Downloads/",
   "kinopoisk": Object {
     "listId": "3575",
-    "usedId": "789114",
+    "userId": "789114",
   },
   "rutracker": Object {
     "cookie": "bb-cookie:123",
