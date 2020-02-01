@@ -1,0 +1,34 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`readConfigFile should fallback to empty config if file does not exist 1`] = `
+Object {
+  "downloadPath": "~",
+  "kinopoisk": Object {
+    "listId": null,
+    "usedId": null,
+  },
+  "rutracker": Object {
+    "cookie": null,
+  },
+  "version": "1",
+  "watchList": Array [],
+}
+`;
+
+exports[`readConfigFile should read config from a json file 1`] = `
+Object {
+  "downloadPath": "~/Downloads/",
+  "kinopoisk": Object {
+    "listId": "3575",
+    "usedId": "789114",
+  },
+  "rutracker": Object {
+    "cookie": "bb-cookie:123",
+  },
+  "version": "1",
+  "watchList": Array [
+    "revenant",
+    "who's afraid of virginia woolf",
+  ],
+}
+`;
