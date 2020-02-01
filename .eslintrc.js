@@ -12,7 +12,8 @@ module.exports = {
     'prettier',
   ],
   rules: {
-    'prettier/prettier': 'error'
+    'prettier/prettier': 'error',
+    'no-param-reassign': 'off'
   },
   env: {
     node: true
