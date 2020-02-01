@@ -37,13 +37,13 @@ function getRutrackerClient(config) {
 }
 
 function getWatchlistClient(config) {
-  const { listId, userId } = config.kinopoisk;
+  const { watchUrl } = config.kinopoisk;
 
-  if (!userId || !listId) {
-    throw new Error("Kinopoisk userId and listId are not defined");
+  if (!watchUrl) {
+    throw new Error("Kinopoisk watch url is not defined. Use 'watch' command first");
   }
 
-  return new KinopoiskWatchlist(userId, listId);
+  return new KinopoiskWatchlist(watchUrl);
 }
 
 function login(config, options) {
@@ -63,6 +63,13 @@ async function showWatchlist(config) {
   watchlist.forEach(item => console.log(item));
 
   return newConfig;
+}
+
+async function setWatchUrl(config, watchUrl) {
+  return {
+    ...config,
+    kinopoisk: { watchUrl }
+  };
 }
 
 async function checkUpdates(config) {
@@ -97,6 +104,11 @@ function runRevenant(argv) {
     .option("-u, --username <str>", "Rutracker account username")
     .option("-p, --password <str>", "Rutracker account password")
     .action(createCommand(login));
+  
+  commander
+    .command("watch [url]")
+    .description("set kinopoisk movies list watch url")
+    .action(createCommand(setWatchUrl));
 
   commander
     .command("list")

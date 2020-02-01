@@ -4,8 +4,7 @@ exports[`readConfigFile should fallback to empty config if file does not exist 1
 Object {
   "downloadPath": "~",
   "kinopoisk": Object {
-    "listId": null,
-    "userId": null,
+    "watchUrl": null,
   },
   "rutracker": Object {
     "cookie": null,
@@ -20,8 +19,7 @@ exports[`readConfigFile should read config from a json file 1`] = `
 Object {
   "downloadPath": "~/Downloads/",
   "kinopoisk": Object {
-    "listId": "3575",
-    "userId": "789114",
+    "watchUrl": "https://www.kinopoisk.ru/user/789114/movies/list/type/3575/#list",
   },
   "rutracker": Object {
     "cookie": "bb-cookie:123",
