@@ -30,6 +30,7 @@ function getRutrackerClient(config) {
   const rutracker = new RutrackerApi();
 
   if (config.rutracker.cookie) {
+    rutracker.pageProvider.authorized = true;
     rutracker.pageProvider.cookie = config.rutracker.cookie;
   }
 
