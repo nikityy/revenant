@@ -2,8 +2,9 @@ const commander = require("commander");
 const chalk = require("chalk");
 const RutrackerApi = require("rutracker-api");
 
-const KinopoiskConfig = require("./lib/kinopoisk-config");
-const Revenant = require("./lib/revenant");
+const { readConfigFile, writeConfigFile } = require('./lib/config');
+const KinopoiskWatchlist = require("./lib/kinopoisk-watchlist");
+const { authenticate, fetchNewTorrents, fetchWatchlist } = require("./lib/revenant");
 
 const DEFAULT_CONFIG_PATH = `${process.env.HOME}/.revenantrc.json`;
 
@@ -20,93 +21,94 @@ class RevenantCli {
       .description("authorize user with username/password pair")
       .option("-u, --username <str>", "Rutracker account username")
       .option("-p, --password <str>", "Rutracker account password")
-      .action(options => {
-        const { username, password } = options;
-        const revenant = this.getRevenant();
-
-        revenant
-          .login({ username, password })
-          .then(() => {
-            console.log("Authorization complete");
-          })
-          .catch(this.logErrorAndExit);
-      });
+      .action(this.command(this.login.bind(this)));
 
     commander
       .command("list")
       .description("display all items in watch list")
-      .action(() => {
-        const revenant = this.getRevenant();
-
-        revenant
-          .getWatchList()
-          .then(this.printWatchList)
-          .catch(this.logErrorAndExit);
-      });
-
-    commander
-      .command("add [query]")
-      .description("add item to watch list")
-      .action(query => {
-        const revenant = this.getRevenant();
-
-        revenant.addToWatchList(query).catch(this.logErrorAndExit);
-      });
-
-    commander
-      .command("remove [query]")
-      .description("remove item from watch list")
-      .action(query => {
-        const revenant = this.getRevenant();
-
-        revenant.removeFromWatchList(query).catch(this.logErrorAndExit);
-      });
+      .action(this.command(this.showWatchlist.bind(this)));
 
     commander
       .command("check")
       .description("check updates and print new torrents")
-      .action(() => {
-        const revenant = this.getRevenant();
-
-        revenant
-          .getUpdates()
-          .then(queries => {
-            Object.keys(queries).forEach(query =>
-              this.announceUpdates(queries[query])
-            );
-          })
-          .catch(this.logErrorAndExit);
-      });
+      .action(this.command(this.checkUpdates.bind(this)));
   }
 
-  runWithArgv() {
-    commander.parse(process.argv);
+  run(argv) {
+    commander.parse(argv);
   }
 
-  getRevenant() {
-    const config = new KinopoiskConfig(commander.config);
+  login(config, options) {
+    const credentials = {
+      username: options.username,
+      password: options.password
+    };
+    const rutracker = this.getRutrackerClient(config);
+
+    return authenticate(rutracker, credentials, config);
+  }
+
+  async showWatchlist(config) {
+    const watchlistClient = this.getWatchlistClient(config);
+    const [watchlist, newConfig] = await fetchWatchlist(watchlistClient, config);
+
+    watchlist.forEach(item => console.log(item));
+
+    return newConfig;
+  }
+
+  async checkUpdates(config) {
+    const rutracker = this.getRutrackerClient(config);
+    const watchlistClient = this.getWatchlistClient(config);
+
+    const [_, newConfig] = await fetchWatchlist(watchlistClient, config);
+    const [torrents, lastConfig] = await fetchNewTorrents(rutracker, newConfig);
+
+    Object.keys(torrents).forEach(query =>
+      torrents[query].forEach(update => {
+        console.log(
+          `${chalk.green("NEW:")} [${update.formattedSize}] ${update.title}\n`,
+          `${update.url}\n`
+        );
+      })
+    );
+
+    return lastConfig;
+  }
+
+  command(handler) {
+    return async (...args) => {
+      try {
+        const config = await readConfigFile(commander.config);
+        const newConfig = await handler(config, ...args);
+  
+        await writeConfigFile(commander.config, newConfig);
+      } catch (error) {
+        console.error(error.message);
+        process.exit(1);
+      }
+    }
+  }
+
+  getRutrackerClient(config) {
     const rutracker = new RutrackerApi();
 
-    return new Revenant({ config, rutracker });
+    if (config.rutracker.cookie) {
+      rutracker.pageProvider.cookie = config.rutracker.cookie;
+    }
+
+    return rutracker;
   }
 
-  logErrorAndExit(error) {
-    console.error(error);
-    process.exit(1);
-  }
+  getWatchlistClient(config) {
+    const userId = config.kinopoisk.userId;
+    const listId = config.kinopoisk.listId;
 
-  printWatchList(watchList) {
-    watchList.forEach(item => console.log(item));
-  }
+    if (!userId || !listId) {
+      throw new Error('Kinopoisk userId and listId are not defined');
+    }
 
-  announceUpdates(updates) {
-    updates.forEach(update => {
-      console.log(
-        `${chalk.green("NEW:")} [${update.formattedSize}] ${update.title}\n${
-          update.url
-        }\n`
-      );
-    });
+    return new KinopoiskWatchlist(userId, listId);
   }
 }
 

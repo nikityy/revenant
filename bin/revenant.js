@@ -3,4 +3,4 @@
 const RevenantCli = require("../");
 
 const cli = new RevenantCli();
-cli.runWithArgv();
+cli.run(process.argv);
