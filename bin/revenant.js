@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 
-const RevenantCli = require("../");
+const { runRevenant } = require("../");
 
-const cli = new RevenantCli();
-cli.run(process.argv);
+runRevenant(process.argv);
