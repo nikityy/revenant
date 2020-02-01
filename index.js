@@ -1,17 +1,59 @@
 const commander = require("commander");
+const fs = require("fs");
 const chalk = require("chalk");
+const path = require("path");
 const RutrackerApi = require("rutracker-api");
 
-const { readConfigFile, writeConfigFile } = require("./lib/config");
-const KinopoiskWatchlist = require("./lib/kinopoisk-watchlist");
 const {
-  authenticate,
-  downloadTorrent,
-  fetchNewTorrents,
-  fetchWatchlist
-} = require("./lib/revenant");
+  readConfigFile,
+  updateTorrents,
+  updateWatchlist,
+  writeConfigFile
+} = require("./lib/config");
+const KinopoiskWatchlist = require("./lib/kinopoisk-watchlist");
 
 const DEFAULT_CONFIG_PATH = `${process.env.HOME}/.revenantrc.json`;
+
+async function fetchTorrents(rutracker, watchlist) {
+  const torrents = await Promise.all(
+    watchlist.map(query => rutracker.search({ query }))
+  );
+  const results = {};
+
+  watchlist.forEach((query, index) => {
+    results[query] = torrents[index];
+  });
+
+  return results;
+}
+
+async function getNewTorrents(torrents, prevTorrents) {
+  const newTorrents = {};
+
+  Object.keys(torrents).forEach(query => {
+    const previousIds = prevTorrents[query];
+    const currentIds = torrents[query].map(torrent => torrent.id);
+    const newIds = currentIds.filter(id => !previousIds.includes(id));
+
+    newTorrents[query] = torrents[query].filter(torrent =>
+      newIds.includes(torrent.id)
+    );
+  });
+
+  return newTorrents;
+}
+
+async function downloadTorrent(rutracker, torrent, config) {
+  const stream = await rutracker.download(torrent.id);
+  const filepath = path.resolve(config.downloadPath, `${torrent.id}.torrent`);
+
+  return new Promise((resolve, reject) => {
+    stream.pipe(fs.createWriteStream(filepath));
+
+    stream.on("end", resolve);
+    stream.on("error", reject);
+  });
+}
 
 function createCommand(handler) {
   return async (...args) => {
@@ -38,7 +80,7 @@ function getRutrackerClient(config) {
   return rutracker;
 }
 
-function getWatchlistClient(config) {
+function fetchWatchlist(config) {
   const { watchUrl } = config.kinopoisk;
 
   if (!watchUrl) {
@@ -47,75 +89,12 @@ function getWatchlistClient(config) {
     );
   }
 
-  return new KinopoiskWatchlist(watchUrl);
-}
-
-function login(config, options) {
-  const credentials = {
-    username: options.username,
-    password: options.password
-  };
-  const rutracker = getRutrackerClient(config);
-
-  return authenticate(rutracker, credentials, config);
-}
-
-async function downloadNewTorrents(config, options) {
-  const newConfig = { ...config };
-
-  if (options.directory) {
-    newConfig.downloadPath = options.directory;
+  try {
+    return new KinopoiskWatchlist(watchUrl).fetch();
+  } catch (error) {
+    console.log(`${error.message}. Using cached watch list\n`);
+    return config.watchlist;
   }
-
-  const rutracker = getRutrackerClient(newConfig);
-  const watchlistClient = getWatchlistClient(newConfig);
-  const [, newerConfig] = await fetchWatchlist(watchlistClient, newConfig);
-  const [torrents, lastConfig] = await fetchNewTorrents(rutracker, newerConfig);
-  const newTorrents = Object.keys(torrents).reduce(
-    (acc, query) => acc.concat(torrents[query]),
-    []
-  );
-
-  await Promise.all(
-    newTorrents.map(torrent => downloadTorrent(rutracker, torrent, config))
-  );
-
-  return lastConfig;
-}
-
-async function showWatchlist(config) {
-  const watchlistClient = getWatchlistClient(config);
-  const [watchlist, newConfig] = await fetchWatchlist(watchlistClient, config);
-
-  watchlist.forEach(item => console.log(item));
-
-  return newConfig;
-}
-
-async function setWatchUrl(config, watchUrl) {
-  return {
-    ...config,
-    kinopoisk: { watchUrl }
-  };
-}
-
-async function checkUpdates(config) {
-  const rutracker = getRutrackerClient(config);
-  const watchlistClient = getWatchlistClient(config);
-
-  const [, newConfig] = await fetchWatchlist(watchlistClient, config);
-  const [torrents, lastConfig] = await fetchNewTorrents(rutracker, newConfig);
-
-  Object.keys(torrents).forEach(query =>
-    torrents[query].forEach(update => {
-      console.log(
-        `${chalk.green("NEW:")} [${update.formattedSize}] ${update.title}\n`,
-        `${update.url}\n`
-      );
-    })
-  );
-
-  return lastConfig;
 }
 
 function runRevenant(argv) {
@@ -130,28 +109,99 @@ function runRevenant(argv) {
     .description("authorize user with username/password pair")
     .option("-u, --username <str>", "Rutracker account username")
     .option("-p, --password <str>", "Rutracker account password")
-    .action(createCommand(login));
+    .action(
+      createCommand(async (config, options) => {
+        const credentials = {
+          username: options.username,
+          password: options.password
+        };
+        const rutracker = getRutrackerClient(config);
+
+        await rutracker.login(credentials);
+
+        return {
+          ...config,
+          rutracker: {
+            cookie: rutracker.pageProvider.cookie
+          }
+        };
+      })
+    );
 
   commander
     .command("watch [url]")
     .description("set kinopoisk movies list watch url")
-    .action(createCommand(setWatchUrl));
+    .action(
+      createCommand(async (config, watchUrl) => ({
+        ...config,
+        kinopoisk: { watchUrl }
+      }))
+    );
 
   commander
     .command("download")
     .description("downloads new torrent files")
     .option("-d, --directory <str>", "download path")
-    .action(createCommand(downloadNewTorrents));
+    .action(
+      createCommand(async (config, options) => {
+        const newConfig = { ...config };
+
+        if (options.directory) {
+          newConfig.downloadPath = options.directory;
+        }
+
+        const rutracker = getRutrackerClient(newConfig);
+        const watchlist = await fetchWatchlist(newConfig);
+        const torrents = await fetchTorrents(rutracker, watchlist);
+        const newTorrents = getNewTorrents(torrents, config.torrents);
+
+        await Promise.all(
+          Object.keys(newTorrents)
+            .reduce((acc, query) => acc.concat(newTorrents[query]), [])
+            .map(torrent => downloadTorrent(rutracker, torrent, config))
+        );
+
+        return updateTorrents(updateWatchlist(newConfig, watchlist), torrents);
+      })
+    );
 
   commander
     .command("list")
     .description("display all items in watch list")
-    .action(createCommand(showWatchlist));
+    .action(
+      createCommand(async config => {
+        const watchlist = await fetchWatchlist(config);
+
+        watchlist.forEach(item => console.log(item));
+
+        return updateWatchlist(config, watchlist);
+      })
+    );
 
   commander
     .command("check")
     .description("check updates and print new torrents")
-    .action(createCommand(checkUpdates));
+    .action(
+      createCommand(async config => {
+        const rutracker = getRutrackerClient(config);
+        const watchlist = await fetchWatchlist(config);
+        const torrents = await fetchTorrents(rutracker, watchlist);
+        const newTorrents = getNewTorrents(torrents, config.torrents);
+
+        Object.keys(newTorrents).forEach(query =>
+          newTorrents[query].forEach(update => {
+            console.log(
+              `${chalk.green("NEW:")} [${update.formattedSize}] ${
+                update.title
+              }\n`,
+              `${update.url}\n`
+            );
+          })
+        );
+
+        return updateTorrents(updateWatchlist(config, watchlist), torrents);
+      })
+    );
 
   commander.parse(argv);
 }
