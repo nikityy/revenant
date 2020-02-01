@@ -8,5 +8,10 @@
     "listId": "3575"
   },
   "version": "1",
+  "torrents": {
+    "a": ["1", "2", "3"],
+    "b": ["4", "5"],
+    "c": ["6", "7", "1"]
+  },
   "watchlist": ["revenant", "who's afraid of virginia woolf"]
 }
