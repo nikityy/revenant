@@ -6,7 +6,7 @@ const { readConfigFile, writeConfigFile } = require("./lib/config");
 const KinopoiskWatchlist = require("./lib/kinopoisk-watchlist");
 const {
   authenticate,
-  downloadTorrents,
+  downloadTorrent,
   fetchNewTorrents,
   fetchWatchlist
 } = require("./lib/revenant");
@@ -71,8 +71,14 @@ async function downloadNewTorrents(config, options) {
   const watchlistClient = getWatchlistClient(newConfig);
   const [, newerConfig] = await fetchWatchlist(watchlistClient, newConfig);
   const [torrents, lastConfig] = await fetchNewTorrents(rutracker, newerConfig);
+  const newTorrents = Object.keys(torrents).reduce(
+    (acc, query) => acc.concat(torrents[query]),
+    []
+  );
 
-  await downloadTorrents(rutracker, torrents, lastConfig);
+  await Promise.all(
+    newTorrents.map(torrent => downloadTorrent(rutracker, torrent, config))
+  );
 
   return lastConfig;
 }
