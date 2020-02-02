@@ -1,0 +1,268 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`check should print new torrents 1`] = `
+Array [
+  "[32mNEW:[39m [4.52 GB] (Heavy Metal) [LP] [32/192] Metallica - Metallica (Black Album) - 1991, WavPack (tracks+.cue)
+",
+  "http://rutracker.org/forum/viewtopic.php?t=5762817
+",
+  "[32mNEW:[39m [4.09 GB] Lick Library - Classic Albums Metallica - The Black Album [HDRip, ENG] (���������)
+",
+  "http://rutracker.org/forum/viewtopic.php?t=5736463
+",
+  "[32mNEW:[39m [0.08 GB] (������, ����� / Thrash Metal) Metallica - ������������� ������ ������� ������������ �������� 1983-1991 ����� [+1998] (Kill'em All; Ride The Lightning; Master Of Puppets; And Justice For All; The Black Album; Garage Inc.) [1983-1991, PDF, RUS]
+",
+  "http://rutracker.org/forum/viewtopic.php?t=5667308
+",
+  "[32mNEW:[39m [3.03 GB] (Heavy Thrash Metal) [LP] [24/192] Metallica - Metallica (Black Album) - 27 Jul 2015, FLAC (image+.cue)
+",
+  "http://rutracker.org/forum/viewtopic.php?t=5515973
+",
+  "[32mNEW:[39m [1.42 GB] (Thrash Metal) [LP] [24/96] Metallica - Black Album - 1991, FLAC (image+.cue), lossless
+",
+  "http://rutracker.org/forum/viewtopic.php?t=5475700
+",
+  "[32mNEW:[39m [1.91 GB] (Thrash) [LP] [24/96] Metallica - Metallica (The Black Album) - 1991, WAVPack (image+.cue), lossless
+",
+  "http://rutracker.org/forum/viewtopic.php?t=2477899
+",
+  "[32mNEW:[39m [3.51 GB] (Heavy Metal) [LP] [32/192] Metallica - Metallica (Black Album)[First Press] - 1991, WavPack (image+.cue)
+",
+  "http://rutracker.org/forum/viewtopic.php?t=5206284
+",
+  "[32mNEW:[39m [3.88 GB] [TR24][DVDA] Metallica � Metallica (aka \\"Black Album\\") - 1991/2001 (Pop-Metal, Thrash Metal)
+",
+  "http://rutracker.org/forum/viewtopic.php?t=4976026
+",
+  "[32mNEW:[39m [4.68 GB] Metallica: Orion Music Festival 2012: The Black Album [2013, Speed/Thrash Metal, HDTV -> DVD5]
+",
+  "http://rutracker.org/forum/viewtopic.php?t=4501399
+",
+  "[32mNEW:[39m [3.02 GB] (Thrash Metal) [2x2LP][24/96] Metallica - Black Album - 1991 + 2000, APE (image+.cue)
+",
+  "http://rutracker.org/forum/viewtopic.php?t=4461111
+",
+  "[32mNEW:[39m [0.26 GB] (Heavy / Thrash / Black / Death Metal) VA - Blackened: Persian Tribute Album To Metallica - 2012, MP3, 320 kbps
+",
+  "http://rutracker.org/forum/viewtopic.php?t=4341500
+",
+  "[32mNEW:[39m [2.38 GB] Metallica - Orion Music Festival (2012 - The Black Album) [2012, Thrash Metal, HDTVRip]
+",
+  "http://rutracker.org/forum/viewtopic.php?t=4338493
+",
+  "[32mNEW:[39m [1.37 GB] (Thrash Metal) [4xEP] [24/96] Metallica - The Black Album [New Rip 2011 Vinyl 45rpm] FLAC (tracks) aksman
+",
+  "http://rutracker.org/forum/viewtopic.php?t=4213443
+",
+  "[32mNEW:[39m [5.02 GB] (Thrash Metal) Metallica - Black Album Anniversary (LiveMetallica.com) - 2012, MP3, 256-320 kbps
+",
+  "http://rutracker.org/forum/viewtopic.php?t=4068587
+",
+  "[32mNEW:[39m [6.39 GB] Metallica - Orion Music Festival (2012 - The Black Album) [2012, Thrash Metal, HDTVRip 720p]
+",
+  "http://rutracker.org/forum/viewtopic.php?t=4110546
+",
+  "[32mNEW:[39m [18.74 GB] Metallica: Orion Music Festival 2012: The Black Album [2012, Metal, HDTV]
+",
+  "http://rutracker.org/forum/viewtopic.php?t=4107290
+",
+  "[32mNEW:[39m [0.47 GB] (Metalcore/Thrash Metal) VA - Kerrang! Presents - Metallica The Black Album Covered - 2012, FLAC (tracks+.cue), lossless
+",
+  "http://rutracker.org/forum/viewtopic.php?t=4104517
+",
+  "[32mNEW:[39m [0.14 GB] (Metalcore/Thrash Metal) VA - Kerrang! Presents - Metallica The Black Album Covered - 2012, MP3, 320 kbps
+",
+  "http://rutracker.org/forum/viewtopic.php?t=4104391
+",
+  "[32mNEW:[39m [0.31 GB] (������, �����) Metallica - Kill 'Em All; Ride The Lightning; Master Of Puppets; And Justice For All; Black Album; Load; Reload; Garage, Inc; Symphony and Metallica; St. Anger; Death Magnetic (11 ����������) [PDF, ENG]
+",
+  "http://rutracker.org/forum/viewtopic.php?t=2754253
+",
+  "[32mNEW:[39m [2.69 GB] (Heavy Metal - Pop) [4LP] [24/192] Metallica - Black Album [45RPM] - 2008, FLAC (image+.cue)
+",
+  "http://rutracker.org/forum/viewtopic.php?t=3769299
+",
+  "[32mNEW:[39m [0.14 GB] (Thrash Metal) VA - Metallica: A Tribute to the Black Album - 2011, MP3, 320 kbps
+",
+  "http://rutracker.org/forum/viewtopic.php?t=3724583
+",
+  "[32mNEW:[39m [0.44 GB] (Metal) VA - A Tribute To The Black Album (Metallica) - 2011, FLAC (tracks+.cue), lossless
+",
+  "http://rutracker.org/forum/viewtopic.php?t=3705383
+",
+  "[32mNEW:[39m [2.58 GB] (Metal) [LP][24/192] Metallica - Metallica (Black Album) (Holland Vertigo 510022-1, 2 LP) - 1991, FLAC (tracks)
+",
+  "http://rutracker.org/forum/viewtopic.php?t=3683447
+",
+  "[32mNEW:[39m [6.97 GB] [BR][DVDA] Metallica - Black Album - 1991 [BD-LPCM] (Heavy Metal)
+",
+  "http://rutracker.org/forum/viewtopic.php?t=3119287
+",
+  "[32mNEW:[39m [1.52 GB] (trash metal) [2LP][24/96] Metallica - \\"Metallica\\" (Black Album) - 1991, FLAC (tracks), lossless
+",
+  "http://rutracker.org/forum/viewtopic.php?t=2874775
+",
+  "[32mNEW:[39m [4.61 GB] [BR][DVDA] Metallica - Black Album - 2001 (Heavy Metal)
+",
+  "http://rutracker.org/forum/viewtopic.php?t=2841696
+",
+  "[32mNEW:[39m [11.45 GB] [DVDA][OF] Metallica - Black Album - 2001 (Heavy Metal)
+",
+  "http://rutracker.org/forum/viewtopic.php?t=2784216
+",
+  "[32mNEW:[39m [0.46 GB] (Heavy Metal) Metallica - Metallica (The Black Album), FLAC (image+.cue), lossless
+",
+  "http://rutracker.org/forum/viewtopic.php?t=1966249
+",
+  "[32mNEW:[39m [0.20 GB] (������, �����) Metallica - Kill'Em All; Ride the Lightning; Master Of Puppets; And Justice For All; Black Album; Load; Reload; Garage Inc.; St. Anger; Death Magnetic (10 �������) [PDF, ENG]
+",
+  "http://rutracker.org/forum/viewtopic.php?t=1856086
+",
+  "[32mNEW:[39m [0.73 GB] Metallica - The Black Album (2001) [RUS] (Terry Shand and Geoff Kempin) [2001, METALL (VIDEO), TVRip]
+",
+  "http://rutracker.org/forum/viewtopic.php?t=1711356
+",
+  "[32mNEW:[39m [0.48 GB] (Thrash Metal) Metallica - Black Album 1991 (custom optimization 2007 air - 2007), CDDA, 16/44.1, lossless, ~1018Kb
+",
+  "http://rutracker.org/forum/viewtopic.php?t=1100628
+",
+  "[32mNEW:[39m [1.57 GB] [TR24][DVDA] Metallica - Black Album (stereo mix 24/96)
+",
+  "http://rutracker.org/forum/viewtopic.php?t=657334
+",
+  "[32mNEW:[39m [4.26 GB] [DVDA][OF] Metallica - Black Album (Hi-Res, ���������������, DVD5) - MLP 5.1 24/96 + �����
+",
+  "http://rutracker.org/forum/viewtopic.php?t=576114
+",
+  "[32mNEW:[39m [0.68 GB] [DTSCD][DVDA] Metallica - Black Album - 2005
+",
+  "http://rutracker.org/forum/viewtopic.php?t=88068
+",
+]
+`;
+
+exports[`check should print new torrents 2`] = `
+Object {
+  "downloadPath": null,
+  "kinopoisk": Object {
+    "watchUrl": "https://www.kinopoisk.ru/user/789114/movies/list/type/3575/#list",
+  },
+  "rutracker": Object {
+    "cookie": "bb-token=xxx",
+  },
+  "torrents": Object {
+    "1917 Сэм Мендес": Array [],
+    "Дау Илья Хржановский": Array [],
+    "Джентльмены Гай Ричи": Array [],
+    "Довод Кристофер Нолан": Array [],
+    "Маленькие женщины Грета Гервиг": Array [],
+    "Офицер и шпион Роман Полански": Array [
+      "5762817",
+      "5736463",
+      "5667308",
+      "5515973",
+      "5475700",
+      "2477899",
+      "5206284",
+      "4976026",
+      "4501399",
+      "4461111",
+      "4341500",
+      "4338493",
+      "4213443",
+      "4068587",
+      "4110546",
+      "4107290",
+      "4104517",
+      "4104391",
+      "2754253",
+      "3769299",
+      "3724583",
+      "3705383",
+      "3683447",
+      "3119287",
+      "2874775",
+      "2841696",
+      "2784216",
+      "1966249",
+      "1856086",
+      "1711356",
+      "1100628",
+      "657334",
+      "576114",
+      "88068",
+    ],
+    "Проверка на дорогах Алексей Герман": Array [],
+  },
+  "version": "1",
+  "watchlist": Array [
+    "Маленькие женщины Грета Гервиг",
+    "Дау Илья Хржановский",
+    "Довод Кристофер Нолан",
+    "1917 Сэм Мендес",
+    "Джентльмены Гай Ричи",
+    "Офицер и шпион Роман Полански",
+    "Проверка на дорогах Алексей Герман",
+  ],
+}
+`;
+
+exports[`list should print all watchlist entries 1`] = `
+Array [
+  "Маленькие женщины Грета Гервиг",
+  "Дау Илья Хржановский",
+  "Довод Кристофер Нолан",
+  "1917 Сэм Мендес",
+  "Джентльмены Гай Ричи",
+  "Офицер и шпион Роман Полански",
+  "Проверка на дорогах Алексей Герман",
+]
+`;
+
+exports[`list should print all watchlist entries 2`] = `
+Object {
+  "downloadPath": null,
+  "kinopoisk": Object {
+    "watchUrl": "https://www.kinopoisk.ru/user/789114/movies/list/type/3575/#list",
+  },
+  "rutracker": Object {
+    "cookie": "bb-token=xxx",
+  },
+  "torrents": Object {
+    "1917 Сэм Мендес": Array [],
+    "Дау Илья Хржановский": Array [],
+    "Джентльмены Гай Ричи": Array [],
+    "Довод Кристофер Нолан": Array [],
+    "Маленькие женщины Грета Гервиг": Array [],
+    "Офицер и шпион Роман Полански": Array [],
+    "Проверка на дорогах Алексей Герман": Array [],
+  },
+  "version": "1",
+  "watchlist": Array [
+    "Маленькие женщины Грета Гервиг",
+    "Дау Илья Хржановский",
+    "Довод Кристофер Нолан",
+    "1917 Сэм Мендес",
+    "Джентльмены Гай Ричи",
+    "Офицер и шпион Роман Полански",
+    "Проверка на дорогах Алексей Герман",
+  ],
+}
+`;
+
+exports[`login should update cookie in config 1`] = `Array []`;
+
+exports[`login should update cookie in config 2`] = `
+Object {
+  "downloadPath": null,
+  "kinopoisk": Object {
+    "watchUrl": null,
+  },
+  "rutracker": Object {
+    "cookie": "bb-token=xxx",
+  },
+  "torrents": Object {},
+  "version": "1",
+  "watchlist": Array [],
+}
+`;

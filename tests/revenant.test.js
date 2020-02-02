@@ -1,169 +1,117 @@
-const Revenant = require("../lib/revenant");
-const {
-  InvalidCredentialsError,
-  NotAuthorizedError
-} = require("../lib/errors");
-const RutrackerMock = require("./mocks/rutracker-mock");
-const ConfigMock = require("./mocks/config-mock");
-const { getHashedSnapshot } = require("./utils");
+const axios = require("axios");
+const MockAdapter = require("axios-mock-adapter");
+const commander = require("commander");
+const fs = require("fs");
+const path = require("path");
+const RutrackerApi = require("rutracker-api");
+const { URL } = require("url");
 
-const { VALID_CREDENTIALS, INVALID_CREDENTIALS, RESULTS } = RutrackerMock;
-const { WATCH_LIST } = ConfigMock;
+const KinopoiskWatchlist = require("../lib/kinopoisk-watchlist");
+const { runRevenant } = require("../lib/revenant");
 
-const REVENANT_CONFIG = {
-  configPath: ""
+const InMemoryConfig = require("./stubs/in-memory-config");
+const InMemoryLogger = require("./stubs/in-memory-logger");
+
+const moviesListHtml = fs.readFileSync(
+  path.join(__dirname, "responses", "kinopoisk-movies-list.html"),
+  { encoding: "utf8" }
+);
+const searchResultsHtml = fs.readFileSync(
+  path.join(__dirname, "responses", "search-results-page.html"),
+  { encoding: "utf8" }
+);
+const noResultsHtml = fs.readFileSync(
+  path.join(__dirname, "responses", "no-results-page.html"),
+  { encoding: "utf8" }
+);
+
+const mock = new MockAdapter(axios);
+
+mock
+  .onGet("https://www.kinopoisk.ru/user/789114/movies/list/type/3575/#list")
+  .reply(200, moviesListHtml);
+
+mock
+  .onPost("http://rutracker.org/forum/login.php")
+  .reply(() => [302, null, { "set-cookie": ["bb-token=xxx"] }]);
+
+mock
+  .onPost(new RegExp("http://rutracker.org/forum/tracker.php"))
+  .reply(config => {
+    const url = new URL(config.url);
+    const query = url.searchParams.get("nm");
+
+    if (query === "Офицер и шпион Роман Полански") {
+      return [200, searchResultsHtml];
+    }
+
+    return [200, noResultsHtml];
+  });
+
+const run = (args, configAdapter, logger) => {
+  const dependencies = {
+    configAdapter,
+    logger,
+    program: new commander.Command(),
+    rutracker: new RutrackerApi(),
+    watchlistClient: KinopoiskWatchlist
+  };
+
+  dependencies.rutracker.pageProvider.request = axios;
+
+  return runRevenant(["node", "revenant", ...args], dependencies);
 };
 
-describe("#login", () => {
-  test("adds valid credentials to config", () => {
-    expect.assertions(2);
+describe("check", () => {
+  test("should print new torrents", async () => {
+    const config = new InMemoryConfig();
+    const logger = new InMemoryLogger();
 
-    const setCookieMock = jest.fn().mockResolvedValue(true);
-    const config = new ConfigMock();
-    config.setCookie = setCookieMock;
-
-    const revenant = new Revenant(REVENANT_CONFIG);
-    revenant.config = config;
-    revenant.rutracker = new RutrackerMock();
-
-    return revenant.login(VALID_CREDENTIALS).then(() => {
-      expect(setCookieMock).toHaveBeenCalledTimes(1);
-      expect(setCookieMock).toHaveBeenCalledWith(RutrackerMock.COOKIE);
-    });
-  });
-
-  test("rejects if credentials are invalid", () => {
-    expect.assertions(1);
-
-    const revenant = new Revenant(REVENANT_CONFIG);
-    revenant.rutracker = new RutrackerMock();
-
-    return expect(revenant.login(INVALID_CREDENTIALS)).rejects.toThrow(
-      InvalidCredentialsError
+    await run(["login", "-u", "username", "-p", "password"], config, logger);
+    await run(
+      [
+        "watch",
+        "https://www.kinopoisk.ru/user/789114/movies/list/type/3575/#list"
+      ],
+      config,
+      logger
     );
+    await run(["check"], config, logger);
+
+    expect(logger.lines).toMatchSnapshot();
+    expect(config.config).toMatchSnapshot();
   });
 });
 
-describe("#addToWatchList", () => {
-  test("adds item to config", () => {
-    expect.assertions(2);
+describe("list", () => {
+  test("should print all watchlist entries", async () => {
+    const config = new InMemoryConfig();
+    const logger = new InMemoryLogger();
 
-    const setWatchListMock = jest.fn().mockResolvedValue(true);
-    const config = new ConfigMock();
-    config.setWatchList = setWatchListMock;
+    await run(["login", "-u", "username", "-p", "password"], config, logger);
+    await run(
+      [
+        "watch",
+        "https://www.kinopoisk.ru/user/789114/movies/list/type/3575/#list"
+      ],
+      config,
+      logger
+    );
+    await run(["list"], config, logger);
 
-    const revenant = new Revenant(REVENANT_CONFIG);
-    revenant.config = config;
-    revenant.rutracker = new RutrackerMock();
-
-    return revenant.addToWatchList("D").then(() => {
-      expect(setWatchListMock).toHaveBeenCalledTimes(1);
-      expect(setWatchListMock).toHaveBeenCalledWith([...WATCH_LIST, "D"]);
-    });
-  });
-
-  test("does nothing if item is already in list", () => {
-    expect.assertions(1);
-
-    const setWatchListMock = jest.fn().mockResolvedValue(true);
-    const config = new ConfigMock();
-    config.setWatchList = setWatchListMock;
-
-    const revenant = new Revenant(REVENANT_CONFIG);
-    revenant.config = config;
-    revenant.rutracker = new RutrackerMock();
-
-    return revenant.addToWatchList(WATCH_LIST[0]).then(() => {
-      expect(setWatchListMock).toHaveBeenCalledTimes(0);
-    });
+    expect(logger.lines).toMatchSnapshot();
+    expect(config.config).toMatchSnapshot();
   });
 });
 
-describe("#removeFromWatchList", () => {
-  test("removes item from config", () => {
-    expect.assertions(2);
+describe("login", () => {
+  test("should update cookie in config", async () => {
+    const config = new InMemoryConfig();
+    const logger = new InMemoryLogger();
 
-    const setWatchListMock = jest.fn().mockResolvedValue(true);
-    const config = new ConfigMock();
-    config.setWatchList = setWatchListMock;
+    await run(["login", "-u", "username", "-p", "password"], config, logger);
 
-    const revenant = new Revenant(REVENANT_CONFIG);
-    revenant.config = config;
-    revenant.rutracker = new RutrackerMock();
-
-    return revenant.removeFromWatchList("B").then(() => {
-      expect(setWatchListMock).toHaveBeenCalledTimes(1);
-      expect(setWatchListMock).toHaveBeenCalledWith(
-        WATCH_LIST.filter(x => x !== "B")
-      );
-    });
-  });
-
-  test("does nothing if item is not in list", () => {
-    expect.assertions(1);
-
-    const setWatchListMock = jest.fn().mockResolvedValue(true);
-    const config = new ConfigMock();
-    config.setWatchList = setWatchListMock;
-
-    const revenant = new Revenant(REVENANT_CONFIG);
-    revenant.config = config;
-    revenant.rutracker = new RutrackerMock();
-
-    return revenant.removeFromWatchList("D").then(() => {
-      expect(setWatchListMock).toHaveBeenCalledTimes(0);
-    });
-  });
-});
-
-describe("#getUpdates", () => {
-  test("resolves with updated items", () => {
-    expect.assertions(1);
-
-    const config = new ConfigMock();
-
-    const revenant = new Revenant(REVENANT_CONFIG);
-    revenant.config = config;
-    revenant.rutracker = new RutrackerMock();
-
-    return expect(revenant.getUpdates()).resolves.toEqual({
-      A: RESULTS.A,
-      B: RESULTS.B,
-      C: RESULTS.C
-    });
-  });
-
-  test("adds updated items to config", () => {
-    expect.assertions(2);
-
-    const setSnapshotsMock = jest.fn().mockResolvedValue(true);
-    const config = new ConfigMock();
-    config.setSnapshots = setSnapshotsMock;
-
-    const revenant = new Revenant(REVENANT_CONFIG);
-    revenant.config = config;
-    revenant.rutracker = new RutrackerMock();
-
-    return revenant.getUpdates().then(() => {
-      expect(setSnapshotsMock).toHaveBeenCalledTimes(1);
-      expect(setSnapshotsMock).toHaveBeenCalledWith({
-        A: getHashedSnapshot(RESULTS.A),
-        B: getHashedSnapshot(RESULTS.B),
-        C: getHashedSnapshot(RESULTS.C)
-      });
-    });
-  });
-
-  test("rejects if not authorized", () => {
-    expect.assertions(1);
-
-    const config = new ConfigMock();
-    config.getCookie = jest.fn().mockResolvedValue(null);
-
-    const revenant = new Revenant(REVENANT_CONFIG);
-    revenant.config = config;
-    revenant.rutracker = new RutrackerMock();
-
-    return expect(revenant.getUpdates()).rejects.toThrow(NotAuthorizedError);
+    expect(logger.lines).toMatchSnapshot();
+    expect(config.config).toMatchSnapshot();
   });
 });

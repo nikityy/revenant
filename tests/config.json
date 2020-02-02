@@ -1,0 +1,16 @@
+{
+  "downloadPath": "~/Downloads/",
+  "rutracker": {
+    "cookie": "bb-cookie:123"
+  },
+  "kinopoisk": {
+    "watchUrl": "https://www.kinopoisk.ru/user/789114/movies/list/type/3575/#list"
+  },
+  "version": "1",
+  "torrents": {
+    "a": ["1", "2", "3"],
+    "b": ["4", "5"],
+    "c": ["6", "7", "1"]
+  },
+  "watchlist": ["revenant", "who's afraid of virginia woolf"]
+}

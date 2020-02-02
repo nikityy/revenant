@@ -13,15 +13,14 @@ module.exports = {
   ],
   rules: {
     'prettier/prettier': 'error',
-    'class-methods-use-this': 'off',
-    'no-param-reassign': 'off',
+    'no-param-reassign': 'off'
   },
   env: {
     node: true
   },
   overrides: [
     {
-      files: ['tests/**/*.test.js'],
+      files: ['tests/*.test.js'],
       env: {
         jest: true,
       }
