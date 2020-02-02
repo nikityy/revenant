@@ -11,6 +11,7 @@ const { runRevenant } = require("../lib/revenant");
  */
 const dependencies = {
   configAdapter: new JsonConfig(`${process.env.HOME}/.revenantrc.json`),
+  logger: console,
   rutracker: new RutrackerApi(),
   watchlistClient: KinopoiskWatchlist
 };
