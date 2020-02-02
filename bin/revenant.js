@@ -2,6 +2,7 @@
 
 const RutrackerApi = require("rutracker-api");
 
+const JsonConfig = require("../lib/json-config");
 const KinopoiskWatchlist = require("../lib/kinopoisk-watchlist");
 const { runRevenant } = require("../lib/revenant");
 
@@ -9,7 +10,7 @@ const { runRevenant } = require("../lib/revenant");
  * Feel free to replace rutracker or watchlistClient with your own implementations
  */
 const dependencies = {
-  configPath: `${process.env.HOME}/.revenantrc.json`,
+  configAdapter: new JsonConfig(`${process.env.HOME}/.revenantrc.json`),
   rutracker: new RutrackerApi(),
   watchlistClient: KinopoiskWatchlist
 };
