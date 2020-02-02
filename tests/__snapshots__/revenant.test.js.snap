@@ -143,12 +143,12 @@ Array [
 
 exports[`check should print new torrents 2`] = `
 Object {
-  "downloadPath": "~/Downloads/",
+  "downloadPath": "~",
   "kinopoisk": Object {
     "watchUrl": "https://www.kinopoisk.ru/user/789114/movies/list/type/3575/#list",
   },
   "rutracker": Object {
-    "cookie": "bb-cookie:123",
+    "cookie": "bb-token=xxx",
   },
   "torrents": Object {
     "1917 Сэм Мендес": Array [],
@@ -221,12 +221,12 @@ Array [
 
 exports[`list should print all watchlist entries 2`] = `
 Object {
-  "downloadPath": "~/Downloads/",
+  "downloadPath": "~",
   "kinopoisk": Object {
     "watchUrl": "https://www.kinopoisk.ru/user/789114/movies/list/type/3575/#list",
   },
   "rutracker": Object {
-    "cookie": "bb-cookie:123",
+    "cookie": "bb-token=xxx",
   },
   "torrents": Object {
     "1917 Сэм Мендес": Array [],
@@ -254,33 +254,15 @@ exports[`login should update cookie in config 1`] = `Array []`;
 
 exports[`login should update cookie in config 2`] = `
 Object {
-  "downloadPath": "~/Downloads/",
+  "downloadPath": "~",
   "kinopoisk": Object {
-    "watchUrl": "https://www.kinopoisk.ru/user/789114/movies/list/type/3575/#list",
+    "watchUrl": null,
   },
   "rutracker": Object {
     "cookie": "bb-token=xxx",
   },
-  "torrents": Object {
-    "a": Array [
-      "1",
-      "2",
-      "3",
-    ],
-    "b": Array [
-      "4",
-      "5",
-    ],
-    "c": Array [
-      "6",
-      "7",
-      "1",
-    ],
-  },
+  "torrents": Object {},
   "version": "1",
-  "watchlist": Array [
-    "revenant",
-    "who's afraid of virginia woolf",
-  ],
+  "watchlist": Array [],
 }
 `;

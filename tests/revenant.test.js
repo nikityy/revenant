@@ -9,6 +9,9 @@ const { URL } = require("url");
 const KinopoiskWatchlist = require("../lib/kinopoisk-watchlist");
 const { runRevenant } = require("../lib/revenant");
 
+const InMemoryConfig = require("./stubs/in-memory-config");
+const InMemoryLogger = require("./stubs/in-memory-logger");
+
 const moviesListHtml = fs.readFileSync(
   path.join(__dirname, "responses", "kinopoisk-movies-list.html"),
   { encoding: "utf8" }
@@ -45,103 +48,70 @@ mock
     return [200, noResultsHtml];
   });
 
-class InMemoryConfig {
-  constructor(config) {
-    this.config = config;
-  }
+const run = (args, configAdapter, logger) => {
+  const dependencies = {
+    configAdapter,
+    logger,
+    program: new commander.Command(),
+    rutracker: new RutrackerApi(),
+    watchlistClient: KinopoiskWatchlist
+  };
 
-  async readConfig() {
-    return this.config;
-  }
+  dependencies.rutracker.pageProvider.request = axios;
 
-  async saveConfig(config) {
-    this.config = config;
-  }
-}
-
-class InMemoryLogger {
-  constructor() {
-    this.lines = [];
-  }
-
-  log(...args) {
-    this.lines.push(...args);
-  }
-}
-
-const config = {
-  downloadPath: "~/Downloads/",
-  rutracker: {
-    cookie: "bb-cookie:123"
-  },
-  kinopoisk: {
-    watchUrl: "https://www.kinopoisk.ru/user/789114/movies/list/type/3575/#list"
-  },
-  version: "1",
-  torrents: {
-    a: ["1", "2", "3"],
-    b: ["4", "5"],
-    c: ["6", "7", "1"]
-  },
-  watchlist: ["revenant", "who's afraid of virginia woolf"]
+  return runRevenant(["node", "revenant", ...args], dependencies);
 };
 
 describe("check", () => {
   test("should print new torrents", async () => {
-    const dependencies = {
-      configAdapter: new InMemoryConfig(config),
-      logger: new InMemoryLogger(),
-      program: new commander.Command(),
-      rutracker: new RutrackerApi(),
-      watchlistClient: KinopoiskWatchlist
-    };
+    const config = new InMemoryConfig();
+    const logger = new InMemoryLogger();
 
-    dependencies.rutracker.pageProvider.request = axios;
+    await run(["login", "-u", "username", "-p", "password"], config, logger);
+    await run(
+      [
+        "watch",
+        "https://www.kinopoisk.ru/user/789114/movies/list/type/3575/#list"
+      ],
+      config,
+      logger
+    );
+    await run(["check"], config, logger);
 
-    await runRevenant(["node", "revenant", "check"], dependencies);
-
-    expect(dependencies.logger.lines).toMatchSnapshot();
-    expect(dependencies.configAdapter.config).toMatchSnapshot();
+    expect(logger.lines).toMatchSnapshot();
+    expect(config.config).toMatchSnapshot();
   });
 });
 
 describe("list", () => {
   test("should print all watchlist entries", async () => {
-    const dependencies = {
-      configAdapter: new InMemoryConfig(config),
-      logger: new InMemoryLogger(),
-      program: new commander.Command(),
-      rutracker: new RutrackerApi(),
-      watchlistClient: KinopoiskWatchlist
-    };
+    const config = new InMemoryConfig();
+    const logger = new InMemoryLogger();
 
-    dependencies.rutracker.pageProvider.request = axios;
+    await run(["login", "-u", "username", "-p", "password"], config, logger);
+    await run(
+      [
+        "watch",
+        "https://www.kinopoisk.ru/user/789114/movies/list/type/3575/#list"
+      ],
+      config,
+      logger
+    );
+    await run(["list"], config, logger);
 
-    await runRevenant(["node", "revenant", "list"], dependencies);
-
-    expect(dependencies.logger.lines).toMatchSnapshot();
-    expect(dependencies.configAdapter.config).toMatchSnapshot();
+    expect(logger.lines).toMatchSnapshot();
+    expect(config.config).toMatchSnapshot();
   });
 });
 
 describe("login", () => {
   test("should update cookie in config", async () => {
-    const dependencies = {
-      configAdapter: new InMemoryConfig(config),
-      logger: new InMemoryLogger(),
-      program: new commander.Command(),
-      rutracker: new RutrackerApi(),
-      watchlistClient: KinopoiskWatchlist
-    };
+    const config = new InMemoryConfig();
+    const logger = new InMemoryLogger();
 
-    dependencies.rutracker.pageProvider.request = axios;
+    await run(["login", "-u", "username", "-p", "password"], config, logger);
 
-    await runRevenant(
-      ["node", "revenant", "login", "-u", "username", "-p", "password"],
-      dependencies
-    );
-
-    expect(dependencies.logger.lines).toMatchSnapshot();
-    expect(dependencies.configAdapter.config).toMatchSnapshot();
+    expect(logger.lines).toMatchSnapshot();
+    expect(config.config).toMatchSnapshot();
   });
 });
