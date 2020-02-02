@@ -1,5 +1,6 @@
 const axios = require("axios");
 const MockAdapter = require("axios-mock-adapter");
+const commander = require("commander");
 const fs = require("fs");
 const path = require("path");
 const RutrackerApi = require("rutracker-api");
@@ -90,6 +91,7 @@ describe("check", () => {
     const dependencies = {
       configAdapter: new InMemoryConfig(config),
       logger: new InMemoryLogger(),
+      program: new commander.Command(),
       rutracker: new RutrackerApi(),
       watchlistClient: KinopoiskWatchlist
     };
@@ -108,6 +110,7 @@ describe("list", () => {
     const dependencies = {
       configAdapter: new InMemoryConfig(config),
       logger: new InMemoryLogger(),
+      program: new commander.Command(),
       rutracker: new RutrackerApi(),
       watchlistClient: KinopoiskWatchlist
     };
@@ -126,6 +129,7 @@ describe("login", () => {
     const dependencies = {
       configAdapter: new InMemoryConfig(config),
       logger: new InMemoryLogger(),
+      program: new commander.Command(),
       rutracker: new RutrackerApi(),
       watchlistClient: KinopoiskWatchlist
     };

@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+const commander = require("commander");
 const RutrackerApi = require("rutracker-api");
 
 const JsonConfig = require("../lib/json-config");
@@ -12,6 +13,7 @@ const { runRevenant } = require("../lib/revenant");
 const dependencies = {
   configAdapter: new JsonConfig(`${process.env.HOME}/.revenantrc.json`),
   logger: console,
+  program: new commander.Command(),
   rutracker: new RutrackerApi(),
   watchlistClient: KinopoiskWatchlist
 };
