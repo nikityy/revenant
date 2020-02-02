@@ -19,6 +19,6 @@ const dependencies = {
 };
 
 runRevenant(process.argv, dependencies).catch(error => {
-  console.error(error.message);
+  dependencies.logger.error(error.message);
   process.exit(1);
 });
