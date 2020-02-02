@@ -54,7 +54,7 @@ const run = (args, configAdapter, logger) => {
     logger,
     program: new commander.Command(),
     rutracker: new RutrackerApi(),
-    watchlistClient: KinopoiskWatchlist
+    watchlistAdapter: KinopoiskWatchlist
   };
 
   dependencies.rutracker.pageProvider.request = axios;
