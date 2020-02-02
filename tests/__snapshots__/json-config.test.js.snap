@@ -2,7 +2,7 @@
 
 exports[`readConfigFile should fallback to empty config if file does not exist 1`] = `
 Object {
-  "downloadPath": "~",
+  "downloadPath": null,
   "kinopoisk": Object {
     "watchUrl": null,
   },
