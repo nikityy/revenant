@@ -4,7 +4,7 @@ const { promisify } = require("util");
 
 const removeFile = promisify(fs.unlink);
 
-const JSONConfig = require("../json-config");
+const JSONConfig = require("../lib/json-config");
 
 const configPath = path.join(__dirname, "config.json");
 const tempConfigPath = path.join(__dirname, "temp-config.json");

@@ -4,7 +4,7 @@ const { promisify } = require("util");
 
 const readFile = promisify(fs.readFile);
 
-const { parseWatchlistFromHtml } = require("../kinopoisk-watchlist");
+const { parseWatchlistFromHtml } = require("../lib/kinopoisk-watchlist");
 
 describe("parseWatchlistFromHtml", () => {
   test("should correctly parse watchlist", async () => {
