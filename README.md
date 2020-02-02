@@ -24,5 +24,5 @@ revenant check
 revenant list
 
 # Скачиваем новые торрент-файлы в папку
-revenant download -d ~/Downloads/
+revenant download ~/Downloads/
 ```
