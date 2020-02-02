@@ -1,0 +1,44 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`list should print all watchlist entries 1`] = `
+Array [
+  "Маленькие женщины Грета Гервиг",
+  "Дау Илья Хржановский",
+  "Довод Кристофер Нолан",
+  "1917 Сэм Мендес",
+  "Джентльмены Гай Ричи",
+  "Офицер и шпион Роман Полански",
+  "Проверка на дорогах Алексей Герман",
+]
+`;
+
+exports[`list should print all watchlist entries 2`] = `
+Object {
+  "downloadPath": "~/Downloads/",
+  "kinopoisk": Object {
+    "watchUrl": "https://www.kinopoisk.ru/user/789114/movies/list/type/3575/#list",
+  },
+  "rutracker": Object {
+    "cookie": "bb-cookie:123",
+  },
+  "torrents": Object {
+    "1917 Сэм Мендес": Array [],
+    "Дау Илья Хржановский": Array [],
+    "Джентльмены Гай Ричи": Array [],
+    "Довод Кристофер Нолан": Array [],
+    "Маленькие женщины Грета Гервиг": Array [],
+    "Офицер и шпион Роман Полански": Array [],
+    "Проверка на дорогах Алексей Герман": Array [],
+  },
+  "version": "1",
+  "watchlist": Array [
+    "Маленькие женщины Грета Гервиг",
+    "Дау Илья Хржановский",
+    "Довод Кристофер Нолан",
+    "1917 Сэм Мендес",
+    "Джентльмены Гай Ричи",
+    "Офицер и шпион Роман Полански",
+    "Проверка на дорогах Алексей Герман",
+  ],
+}
+`;
