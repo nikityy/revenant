@@ -1,7 +1,9 @@
 [![Build Status](https://travis-ci.org/nikityy/revenant.svg?branch=master)](https://travis-ci.org/nikityy/revenant)
 
 # Revenant
-Позволяет следить за раздачами на RuTracker для фильмов из списка на КиноПоиске.
+Позволяет следить за раздачами на RuTracker для фильмов из списка на КиноПоиске.\
+
+Ну а еще ты можешь поредактировать файл [`bin/revenant.js`](https://github.com/nikityy/revenant/blob/master/bin/revenant.js#L10) и поменять поведение программы: например, вместо КиноПоиска ты можешь написать свой адаптер и добавить свои команды в CLI.
 
 ## Установка
 * Запусти `git clone https://github.com/nikityy/revenant.git`
