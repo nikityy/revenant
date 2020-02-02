@@ -9,15 +9,15 @@ const KinopoiskWatchlist = require("../lib/kinopoisk-watchlist");
 const { runRevenant } = require("../lib/revenant");
 
 const moviesListHtml = fs.readFileSync(
-  path.join(__dirname, "kinopoisk-movies-list.html"),
+  path.join(__dirname, "responses", "kinopoisk-movies-list.html"),
   { encoding: "utf8" }
 );
 const searchResultsHtml = fs.readFileSync(
-  path.join(__dirname, "search-results-page.html"),
+  path.join(__dirname, "responses", "search-results-page.html"),
   { encoding: "utf8" }
 );
 const noResultsHtml = fs.readFileSync(
-  path.join(__dirname, "no-results-page.html"),
+  path.join(__dirname, "responses", "no-results-page.html"),
   { encoding: "utf8" }
 );
 
@@ -68,26 +68,25 @@ class InMemoryLogger {
   }
 }
 
+const config = {
+  downloadPath: "~/Downloads/",
+  rutracker: {
+    cookie: "bb-cookie:123"
+  },
+  kinopoisk: {
+    watchUrl: "https://www.kinopoisk.ru/user/789114/movies/list/type/3575/#list"
+  },
+  version: "1",
+  torrents: {
+    a: ["1", "2", "3"],
+    b: ["4", "5"],
+    c: ["6", "7", "1"]
+  },
+  watchlist: ["revenant", "who's afraid of virginia woolf"]
+};
+
 describe("check", () => {
   test("should print new torrents", async () => {
-    const config = {
-      downloadPath: "~/Downloads/",
-      rutracker: {
-        cookie: "bb-cookie:123"
-      },
-      kinopoisk: {
-        watchUrl:
-          "https://www.kinopoisk.ru/user/789114/movies/list/type/3575/#list"
-      },
-      version: "1",
-      torrents: {
-        a: ["1", "2", "3"],
-        b: ["4", "5"],
-        c: ["6", "7", "1"]
-      },
-      watchlist: ["revenant", "who's afraid of virginia woolf"]
-    };
-
     const dependencies = {
       configAdapter: new InMemoryConfig(config),
       logger: new InMemoryLogger(),
@@ -106,24 +105,6 @@ describe("check", () => {
 
 describe("list", () => {
   test("should print all watchlist entries", async () => {
-    const config = {
-      downloadPath: "~/Downloads/",
-      rutracker: {
-        cookie: "bb-cookie:123"
-      },
-      kinopoisk: {
-        watchUrl:
-          "https://www.kinopoisk.ru/user/789114/movies/list/type/3575/#list"
-      },
-      version: "1",
-      torrents: {
-        a: ["1", "2", "3"],
-        b: ["4", "5"],
-        c: ["6", "7", "1"]
-      },
-      watchlist: ["revenant", "who's afraid of virginia woolf"]
-    };
-
     const dependencies = {
       configAdapter: new InMemoryConfig(config),
       logger: new InMemoryLogger(),
@@ -142,24 +123,6 @@ describe("list", () => {
 
 describe("login", () => {
   test("should update cookie in config", async () => {
-    const config = {
-      downloadPath: "~/Downloads/",
-      rutracker: {
-        cookie: "bb-cookie:123"
-      },
-      kinopoisk: {
-        watchUrl:
-          "https://www.kinopoisk.ru/user/789114/movies/list/type/3575/#list"
-      },
-      version: "1",
-      torrents: {
-        a: ["1", "2", "3"],
-        b: ["4", "5"],
-        c: ["6", "7", "1"]
-      },
-      watchlist: ["revenant", "who's afraid of virginia woolf"]
-    };
-
     const dependencies = {
       configAdapter: new InMemoryConfig(config),
       logger: new InMemoryLogger(),
